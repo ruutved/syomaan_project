@@ -1,0 +1,25 @@
+body {
+    font-family: "Verdana", monospace;
+    background: lightgoldenrodyellow;
+}
+
+html {
+    background: lavenderblush;
+}
+
+p {
+    margin: 30px;
+}
+
+form {
+    margin: 30px;
+}
+
+input {
+    width: 50%;
+}
+
+
+footer {
+    background: beige;
+}

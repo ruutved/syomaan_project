@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Tervetuloa{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    {{ super() }}
+
+<p>Olet kirjautunut sisään, {{ user }}</p>
+
+{% endblock %}
