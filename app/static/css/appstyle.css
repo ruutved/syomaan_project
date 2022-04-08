@@ -11,6 +11,10 @@ p {
     margin: 30px;
 }
 
+li {
+    margin: 0 0 0 30px;
+}
+
 form {
     margin: 30px;
 }
@@ -19,7 +23,22 @@ input {
     width: 50%;
 }
 
-
 footer {
     background: beige;
+}
+
+h2 {
+    margin: 30px;
+}
+
+.form-group {
+    width: 30%;
+}
+
+#remember {
+    white-space: nowrap;
+}
+
+#remember label {
+    padding-left: 0.4em;
 }

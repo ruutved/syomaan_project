@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Lisää resepti{% endblock %}
+{% block head %}
+    {{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{% endblock %}
+{% block content %}
+    {{ super() }}
+<div id="content">
+    <h2>Lisää uusi resepti</h2>
+
+    <form action="" method="post">
+    <div class="form-group">
+        <label></label>
+        <label for="inputName"></label>
+        <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required>
+        <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen nimi.</small>
+    </div>
+    <div class="form-group">
+
+        <label for="inputQty"></label>
+        <input name="quantity" class="form-control" id="inputQty" placeholder="Määrä" required>
+        <small id="qtyHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
+
+        <label for="inputMeasure"></label>
+        <input name="measuring_unit" class="form-control" id="inputMeasure" placeholder="Määrä" required>
+        <small id="measureHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
+
+        <label for="inputIngr"></label>
+        <input name="ingredient" class="form-control" id="inputIngr" placeholder="Määrä" required>
+        <small id="ingrHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
+
+    <div class="input_fields_wrap">
+        <button type="submit" class="btn btn-primary">Lisää ainesosa</button>
+    </div></div>
+    <div class="form-group">
+        <label for="inputInstructions"></label>
+        <input type="text" name="instructions" class="form-control" id="inputInstructions" placeholder="Valmistusohje" required>
+        <small id="instrHelp" class="form-text text-muted">Lisää ohje, mutta älä tarinoi. Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lisää resepti!</button>
+    </form>
+</div>
+
+
+<script>
+
+</script>
+
+{% endblock %}

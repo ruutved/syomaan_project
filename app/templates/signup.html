@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Rekisteröidy{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    {{ super() }}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<!-- Tänne tehdään div (3-column layout) - jotta saa nätisti tuon lomakkeen keskelle
+Logo vasemmalla, muut linkit aina oikealla paitsi mobile versionissa ne on sitten toggled -->
+
+
+<div id="content">
+
+
+    <p>Rekisteröityneenä käyttäjänä voit:</p>
+    <li>Lisätä, muokata ja poistaa omia reseptejä</li>
+    <li>Luoda viikkosuunnitelman</li>
+    <li>Koota viikkosuunnitelman perusteella ostoslistan</li>
+    <h2>Rekisteröidy tästä!</h2>
+    <p>Oletko jo rekisteröitynyt? Siirry <a href="{{ url_for('login') }}">kirjautumissivulle!</a></p>
+<form action="" method="post">
+    <div class="form-group">
+        <label></label>
+        <label for="inputName"></label>
+        <input name="name" class="form-control" id="inputName" size="50" maxlength="1000" aria-describedby="emailHelp" placeholder="Nimi" required>
+        <small id="fullName" class="form-text text-muted">Etunimi riittää!</small>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail"></label>
+        <input name="email" class="form-control" id="inputEmail"  maxlength="100" placeholder="Sähköpostiosoite" required>
+        <small id="emailHelp" class="form-text text-muted">Emme lähetä sinulle mitään emmekä jaa sähköpostiosoitettasi kenellekään!</small>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword"></label>
+        <input type="password" name="password1" maxlength="100" minlength="8" class="form-control" id="inputPassword" placeholder="Salasana" required>
+        <small id="passwordHelp" class="form-text text-muted">Keksi jokin salasana, jota et käytä muilla sivustoilla.</small>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword2"></label>
+        <input type="password" name="password2" maxlength="100" minlength="8" class="form-control" id="inputPassword2" placeholder="Toista salasana" required>
+        <small id="password2Help" class="form-text text-muted">Kirjoita vielä salasana uudestaan.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Rekisteröidy!</button>
+
+</form>
+</div>
+
+{% endblock %}

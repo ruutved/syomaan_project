@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Viikkosuunnitelma{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    {{ super() }}
+<h2>Viikkosuunnitelma - {{ name }}</h2>
+
+tähän tulee html-table, johon lisätään klikkaamalla resepti (sen nimi).
+
+{% endblock %}
