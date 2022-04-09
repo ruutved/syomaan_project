@@ -14,21 +14,19 @@
         <label></label>
         <label for="inputName"></label>
         <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required>
-        <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen nimi.</small>
+        <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen nimi.</small><br>
     </div>
     <div class="form-group">
-
+        <small id="helper" class="form-text text-muted">Lisää seuraavaksi määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
+        Paina "Lisää ainesosa" -nappia lisätäksesi useita ainesosia.</small>
         <label for="inputQty"></label>
         <input name="quantity" class="form-control" id="inputQty" placeholder="Määrä" required>
-        <small id="qtyHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
 
         <label for="inputMeasure"></label>
-        <input name="measuring_unit" class="form-control" id="inputMeasure" placeholder="Määrä" required>
-        <small id="measureHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
+        <input name="measuring_unit" class="form-control" id="inputMeasure" placeholder="Yksikkö" required>
 
         <label for="inputIngr"></label>
-        <input name="ingredient" class="form-control" id="inputIngr" placeholder="Määrä" required>
-        <small id="ingrHelp" class="form-text text-muted">Lisää määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa</small>
+        <input name="ingredient" class="form-control" id="inputIngr" placeholder="Ainesosa" required><br>
 
     <div class="input_fields_wrap">
         <button type="submit" class="btn btn-primary">Lisää ainesosa</button>

@@ -1,5 +1,3 @@
-import uuid
-
 from flask import Flask, redirect, url_for, render_template, flash, request
 from flask_login import LoginManager, UserMixin, login_required, logout_user, login_user, current_user
 from flask_mongoengine import MongoEngine
@@ -43,7 +41,9 @@ def load_user(user_id):
 
 @app.route("/", methods=['GET'])
 def home():
-    return render_template("home.html")
+    recipes = Recipe.objects
+
+    return render_template("home.html", recipes=recipes)
 
 
 @app.route("/logged_in")
@@ -55,7 +55,18 @@ def logged_in():
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.user_name)  # recipes=current_user.recipes (voiko näin tehdä)?
+    email = current_user.email
+    recipes = Recipe.objects
+
+    user_recipes = 0
+
+    for recipe in recipes:
+        if recipe["creator"] == email:
+            user_recipes += 1
+        else:
+            print("This recipe was created by another user")
+
+    return render_template('profile.html', user_recipes=user_recipes, name=current_user.user_name)
 
 
 @app.route("/plan")

@@ -10,6 +10,23 @@
 <p>Löydä itsellesi ja perheellesi sopivat reseptit ja lisää ne viikkosuunnitelmaan.</p>
 <p>Luo viikkosuunnitelman perusteella ostoslista.</p>
 
-    <p>Tähän tulee reseptit. Kaikki linkit on yläpalkissa. </p>
+
+    {% if recipes|length > 0 %}
+        {% for recipe in recipes %}
+        <table id="allRecipes">
+        <tr id="recipe">
+            <th id="name">{{recipe.recipe_name}}</th>
+            <th>Ainesosat:</th>
+            <td id="ingredients">{{recipe.ingredients['quantity']}} {{recipe.ingredients['measuring_unit']}} {{recipe.ingredients['ingredient']}}</td>
+            <th>Ohje:</th>
+            <td id="description">{{recipe.description}}</td>
+            {% if recipe.creator == current_user.email %}
+            <td><a href="">Poista</a></td>
+            <td><a href="">Muokkaa</a></td>
+            {% endif %}
+        {% endfor %}
+        {% else %}
+        <h3>Ei vielä reseptejä! <a href="{{ url_for('add_recipe')}}">Lisää ensimmäinen!</a></h3>
+            {% endif %}</tr></table>
 </div>
 {% endblock %}

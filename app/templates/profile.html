@@ -9,7 +9,7 @@
 
 <p>Sähköpostiosoite: {{ current_user.email }} </p>
 <p>Jäsen {{ current_user.registration_time.strftime('%d.%m.%Y') }} alkaen</p>
-<p>Lisättyjä reseptejä: {{ current_user.recipes }}</p> tähän reseptien lukumäärä (jos reseptit on lisätty listaan, niin listan pituus)
+<p>Lisättyjä reseptejä: {{ user_recipes }}</p>
 <p>Katso tästä kaikki lisäämäsi reseptit</p> tähän siis linkki sivulle reseptit.html tai vastaavaa, ja pitäis olla tagi
 jotenkin että se on tämän käyttäjän lisäämä
 <p><a href="{{ url_for('plan') }}">Oma viikkosuunnitelma</a></p>
