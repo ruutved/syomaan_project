@@ -2,48 +2,53 @@
 {% block title %}Lisää resepti{% endblock %}
 {% block head %}
     {{ super() }}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="../static/css/script.js"></script>
+
 {% endblock %}
 {% block content %}
     {{ super() }}
 <div id="content">
     <h2>Lisää uusi resepti</h2>
-
     <form action="" method="post">
     <div class="form-group">
         <label></label>
         <label for="inputName"></label>
         <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required>
         <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen nimi.</small><br>
-    </div>
-    <div class="form-group">
-        <small id="helper" class="form-text text-muted">Lisää seuraavaksi määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
-        Paina "Lisää ainesosa" -nappia lisätäksesi useita ainesosia.</small>
-        <label for="inputQty"></label>
-        <input name="quantity" class="form-control" id="inputQty" placeholder="Määrä" required>
+    <small id="helper" class="form-text text-muted">Lisää seuraavaksi määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
+        Paina "Lisää ainesosa" -nappia lisätäksesi ainesosia.</small>
 
-        <label for="inputMeasure"></label>
-        <input name="measuring_unit" class="form-control" id="inputMeasure" placeholder="Yksikkö" required>
+        <label for="quantity1"></label>
+        <input type="text" class="form-control" name="quantity" id="quantity1" placeholder="Määrä" required>
 
-        <label for="inputIngr"></label>
-        <input name="ingredient" class="form-control" id="inputIngr" placeholder="Ainesosa" required><br>
+        <label for="measuring_unit1"></label>
+        <input type="text" class="form-control" name="measuring_unit" id="measuring_unit1" placeholder="Yksikkö" required>
 
-    <div class="input_fields_wrap">
-        <button type="submit" class="btn btn-primary">Lisää ainesosa</button>
-    </div></div>
-    <div class="form-group">
+        <label for="ingredient1"></label>
+        <input type="text" class="form-control" name="ingredient" id="ingredient1" placeholder="Ainesosa" required><br>
+
+        <div id="moreIngredients"></div>
+
+        <button type="button" id="add" class="btn btn-primary">Lisää vielä yksi ainesosa!</button><br><br>
+        <button type="button" id="save" class="btn btn-primary">Tallenna ainesosat ja jatka ohjeeseen!</button><br><br>
+
+        <small id="instrHelp" class="form-text text-muted">Viimeiseksi lisää ohje, mutta älä tarinoi. Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
         <label for="inputInstructions"></label>
-        <input type="text" name="instructions" class="form-control" id="inputInstructions" placeholder="Valmistusohje" required>
-        <small id="instrHelp" class="form-text text-muted">Lisää ohje, mutta älä tarinoi. Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
-    </div>
+        <input type="text" name="instructions" class="form-control" id="inputInstructions" placeholder="Valmistusohje" required><br>
 
-    <button type="submit" class="btn btn-primary">Lisää resepti!</button>
-    </form>
+    <button type="submit" name="submit_button" class="btn btn-primary" id="submit_it">Lisää resepti!</button>
+    </div></form>
 </div>
 
 
-<script>
 
-</script>
+
+    <!--Tehtävää:
+    Lisätään nappi, josta tulee uudet kentät uudelle ainesosalle.
+        Sama nappi lisää jo lisätyn ainesosan ensin dictionaryyn ja sitten
+    se lisätään ingredients-listaan. Tämä ingredients-lista lähetetään
+    backendiin ja siitä tulee ingredients-array MongoDB:hen.
+        Jos sivulta poistutaan eikä reseptiä näin ollen luoda niin lista tyhjenee.-->
+
 
 {% endblock %}

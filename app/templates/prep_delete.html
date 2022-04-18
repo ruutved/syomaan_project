@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Poista resepti{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+<h3>Poistetaanko tämä resepti?</h3><br>
+
+    <table>
+        <tr>
+            <td>{{recipe.recipe_name}}</td>
+            <td>{{recipe.ingredients['quantity']}} {{recipe.ingredients['measuring_unit']}} {{recipe.ingredients['ingredient']}}</td>
+            <td>{{recipe.description}}</td>
+        </tr>
+
+    </table><br>
+
+    <a class="del" href="{{url_for('delete_recipe', recipe_name=recipe['recipe_name'])}}"
+       onclick="return confirm_alert(this)">Poista</a>
+    <a class="del" href="{{url_for('home')}}">Palaa etusivulle</a>
+<script>
+    function confirm_alert() {
+        return confirm("Resepti poistettu!")
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Muokkaa reseptiä{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+{% block content %}
+    {{ super() }}
+    <h3>Muokkaa reseptiä: {{recipe.recipe_name}}</h3>
+
+        <form id="recipe_form">
+            <p><label for="name">Reseptin nimi: </label>
+            <input type="text" id="name" name="name" value="{{recipe.recipe_name}}"/></p>
+
+            <p><label for="ingredients">Ainesosat: </label>
+            <input type="text" id="ingredients" name="ingredients" value="{% for ingredient in recipe['ingredients'] %}
+                        {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}
+                    {% endfor %}" /></p>
+
+            <p><label for="instructions">Ohje: </label>
+            <input type="text" id="instructions" name="instructions" value="{{recipe.description}}" /></p>
+
+            <p><input type="submit" id="submit" value="Tallenna" onclick="return confirm_alert(this)"/></p>
+        </form>
+<script>
+
+    let form = document.getElementById("student_form")
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let data = new FormData(form);
+
+        axios({
+                method: "put",
+                url: "/",
+                data: data,
+                header: {"Content-Type": "application/json"
+                }
+        })
+        .then(function(response) {
+            console.log("Response, data = " + response.data)
+
+            if (response.status === 200) {
+                form.reset()
+                window.location = "/";
+            }
+        })
+        .catch(function (response) {
+            console.log(response);
+        })
+    })
+
+    function confirm_alert() {
+        return confirm("Resepti päivitetty!")
+    }
+
+</script>
+
+{% endblock %}

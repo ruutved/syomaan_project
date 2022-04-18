@@ -17,16 +17,24 @@
         <tr id="recipe">
             <th id="name">{{recipe.recipe_name}}</th>
             <th>Ainesosat:</th>
-            <td id="ingredients">{{recipe.ingredients['quantity']}} {{recipe.ingredients['measuring_unit']}} {{recipe.ingredients['ingredient']}}</td>
+            <td id="ingredients">{% endfor %}
+                {% for recipe in recipes %}
+                    {% for ingredient in recipe['ingredients'] %}
+                        {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}
+                    {% endfor %}
+                {% endfor %}</td>
             <th>Ohje:</th>
-            <td id="description">{{recipe.description}}</td>
+            <td id="description">{% for recipe in recipes %}
+                {{recipe.description}} </td>
             {% if recipe.creator == current_user.email %}
-            <td><a href="">Poista</a></td>
-            <td><a href="">Muokkaa</a></td>
+            <td><a href="{{ url_for('prepare_delete', recipe_name=recipe['recipe_name'])}}">Poista</a></td>
+            <td><a href="{{ url_for('modify', recipe_name=recipe['recipe_name'])}}">Muokkaa</a></td>
             {% endif %}
-        {% endfor %}
+            {% if current_user.is_authenticated %}
+            <td><a href="">Lisää viikkosuunnitelmaan</a></td>
+            {% endif %}{% endfor %}
         {% else %}
         <h3>Ei vielä reseptejä! <a href="{{ url_for('add_recipe')}}">Lisää ensimmäinen!</a></h3>
-            {% endif %}</tr></table>
+        {% endif %}</tr></table>
 </div>
 {% endblock %}

@@ -21,6 +21,7 @@ form {
 
 input {
     width: 50%;
+    margin: 30px;
 }
 
 footer {
@@ -41,4 +42,8 @@ h2 {
 
 #remember label {
     padding-left: 0.4em;
+}
+
+#helper {
+    text-align: justify;
 }
