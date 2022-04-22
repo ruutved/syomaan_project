@@ -27,6 +27,7 @@ class User(db.Document, UserMixin):
     email = db.EmailField(unique=True)
     password = db.StringField(default=True)
     registration_time = db.DateTimeField(default=datetime.now())
+    recipes = db.ListField(default=True)
 
 
 class Recipe(db.Document):
@@ -41,11 +42,42 @@ def load_user(user_id):
     return User.objects(pk=user_id).first()
 
 
-@app.route("/", methods=['GET'])
+@app.route("/", methods=['GET', 'PUT', 'PATCH'])
 def home():
-    recipes = Recipe.objects
 
-    return render_template("home.html", recipes=recipes)
+    global upd_ingredients
+
+    if request.method == 'GET':
+        recipes = Recipe.objects
+        return render_template("home.html", recipes=recipes)
+
+    elif request.method == 'PUT':
+        upd_ingredients = request.get_json(force=True)
+        res = make_response(jsonify({"message": "ingredients updated"}))
+        return res
+    else:
+        recipe = Recipe.objects(id=request.form["recipe_id"]).first()
+
+        if upd_ingredients:
+
+            recipe_name = request.form.get("rec_name")
+            description = request.form.get("instructions")
+            ingredients = upd_ingredients
+
+            recipe.update(recipe_name=recipe_name,
+                          ingredients=ingredients,
+                          description=description)
+
+            return redirect(url_for('home'))
+
+        else:
+            recipe_name = request.form.get("rec_name")
+            description = request.form.get("instructions")
+
+            recipe.update(recipe_name=recipe_name,
+                          description=description)
+
+            return redirect(url_for('home'))
 
 
 @app.route("/logged_in")
@@ -71,10 +103,18 @@ def profile():
     return render_template('profile.html', user_recipes=user_recipes, name=current_user.user_name)
 
 
-@app.route("/plan")
+@app.route("/plan", methods=['GET', 'PUT'])
 @login_required
 def plan():
-    return render_template('plan.html', name=current_user.user_name)
+    if request.method == 'GET':
+        recipes = User.objects
+        return render_template('plan.html', name=current_user.user_name, recipes=recipes)
+    # HTML-sivulla
+    else:
+        pass
+        # Lisää klikattu resepti (sen id) käyttäjän reseptit-objektiin PUT-requestilla.
+
+@app.route("/")
 
 
 @app.route("/add_recipe", methods=["POST", "PUT", "GET"])
@@ -206,6 +246,7 @@ def delete_recipe(recipe_name):
 
 
 @app.route("/recipes/<recipe_name>", methods=["GET", "PUT"])
+@login_required
 def modify(recipe_name):
     recipes = Recipe.objects
     recipe = Recipe.objects(recipe_name=recipe_name).first()
@@ -216,8 +257,8 @@ def modify(recipe_name):
         else:
             return render_template("modify.html", recipe=recipe)
     else:
-        recipe = request.get_json(force=True)
-        recipe.update()
+        stuff = request.get_data(as_text=True)
+        print(stuff)
         return render_template("home.html", recipes=recipes)
 
 

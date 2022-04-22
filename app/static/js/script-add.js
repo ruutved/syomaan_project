@@ -39,7 +39,6 @@
             };
         }
 
-
     ingredients.push(one_ingredient);
     console.log(one_ingredient);
     console.log(ingredients);
@@ -52,11 +51,11 @@
 
     }
 
-
-    /* Tallenna viimeinen ainesosa painamalla Submit-nappia niin, ettei
-    * ole tarpeen painaa Lisää ainesosa -nappia. Eli saveInput pitää olla myös
-    * submit-napissa. Sen lisäksi remove-nappi tähän, ja selvitä miten
-    * viedä ingredients-lista pythonin puolelle. */
+    function removeIngredient () {
+        /* Nappia painamalla pitää voida poistaa ainesosa.
+       * Poistetaan siis kentät. Jos on ehditty tallentaa se jo ainesosiin niin se pitää myös
+       * poistaa niistä. */
+    }
 
     function addInput(){
         num++;

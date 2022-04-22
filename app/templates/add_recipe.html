@@ -2,7 +2,7 @@
 {% block title %}Lisää resepti{% endblock %}
 {% block head %}
     {{ super() }}
-<script src="../static/css/script.js"></script>
+<script src="../static/js/script-add.js"></script>
 
 {% endblock %}
 {% block content %}
@@ -39,16 +39,6 @@
     <button type="submit" name="submit_button" class="btn btn-primary" id="submit_it">Lisää resepti!</button>
     </div></form>
 </div>
-
-
-
-
-    <!--Tehtävää:
-    Lisätään nappi, josta tulee uudet kentät uudelle ainesosalle.
-        Sama nappi lisää jo lisätyn ainesosan ensin dictionaryyn ja sitten
-    se lisätään ingredients-listaan. Tämä ingredients-lista lähetetään
-    backendiin ja siitä tulee ingredients-array MongoDB:hen.
-        Jos sivulta poistutaan eikä reseptiä näin ollen luoda niin lista tyhjenee.-->
 
 
 {% endblock %}

@@ -20,7 +20,7 @@
             <td id="ingredients">{% endfor %}
                 {% for recipe in recipes %}
                     {% for ingredient in recipe['ingredients'] %}
-                        {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}
+                        {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}<br>
                     {% endfor %}
                 {% endfor %}</td>
             <th>Ohje:</th>
