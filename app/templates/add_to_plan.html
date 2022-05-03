@@ -1,14 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Poista resepti{% endblock %}
+{% block title %}Viikkosuunnitelma{% endblock %}
 {% block head %}
     {{ super() }}
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endblock %}
-
 {% block content %}
     {{ super() }}
-<h3>Poistetaanko tämä resepti?</h3><br>
-<h4>Resepti poistetaan myös viikkosuunnitelmasta.</h4>
+<h2>Lisätäänkö {{ recipe_name }} viikkosuunnitelmaan?</h2>
 
     <table>
         <tr>
@@ -22,12 +19,13 @@
 
     </table><br>
 
-    <a class="del" href="{{url_for('delete_recipe', recipe_name=recipe['recipe_name'])}}"
-       onclick="return confirm_alert(this)">Poista</a>
+    <a class="del" href="{{url_for('added_to_plan', recipe_name=recipe['recipe_name'])}}"
+       onclick="return confirm_alert(this)">Lisää</a>
     <a class="del" href="{{url_for('home')}}">Palaa etusivulle</a>
 <script>
     function confirm_alert() {
-        return confirm("Resepti poistettu!")
+        return confirm("Resepti lisätty viikkosuunnitelmaan!")
     }
 </script>
+
 {% endblock %}

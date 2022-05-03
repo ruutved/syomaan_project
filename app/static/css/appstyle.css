@@ -1,14 +1,14 @@
 body {
     font-family: "Verdana", monospace;
     background: lightgoldenrodyellow;
-}
-
-html {
-    background: lavenderblush;
+    align-items: center;
+    overflow-x: hidden;
+    padding-top: 100px;
 }
 
 p {
     margin: 30px;
+    text-align: justify;
 }
 
 li {
@@ -24,17 +24,11 @@ input {
     margin: 30px;
 }
 
-footer {
-    background: beige;
-}
 
 h2 {
     margin: 30px;
 }
 
-.form-group {
-    width: 30%;
-}
 
 #remember {
     white-space: nowrap;
@@ -46,4 +40,73 @@ h2 {
 
 #helper {
     text-align: justify;
+}
+
+table {
+    margin: 30px;
+}
+* {
+  box-sizing: border-box;
+}
+
+.row {
+    height: 70vh;
+}
+
+.container {
+  display: flex;
+}
+
+.item {
+  background: mistyrose;
+  flex-flow: column;
+}
+
+h4 {
+    margin: 30px;
+}
+
+#intro {
+    margin: auto;
+    align-self: center;
+    position: relative;
+}
+
+@media screen and (max-width: 800px) {
+    #intro {
+        width: 90%;
+    }
+}
+
+@media screen and (min-width: 801px) {
+    #intro {
+        width: 55%;
+    }
+}
+
+.flex-sm-column {
+    width: 25%;
+}
+
+.flex-lg-column {
+    width: 50%;
+    background: linen;
+    text-align: center;
+    height: auto;
+}
+
+#printButton {
+    margin: 0 0 0 30px;
+}
+
+#showInstructions {
+    margin: 0 0 0 30px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+textarea {
+    max-width: 100%;
 }

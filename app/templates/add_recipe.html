@@ -7,10 +7,11 @@
 {% endblock %}
 {% block content %}
     {{ super() }}
-<div id="content">
-    <h2>Lisää uusi resepti</h2>
+
+<div class="row">
+    <div class="flex-sm-column"></div>
+    <div class="flex-lg-column rounded"><h1>Lisää uusi resepti</h1>
     <form action="" method="post">
-    <div class="form-group">
         <label></label>
         <label for="inputName"></label>
         <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required>
@@ -20,9 +21,11 @@
 
         <label for="quantity1"></label>
         <input type="text" class="form-control" name="quantity" id="quantity1" placeholder="Määrä" required>
+        <small id="quantity" class="form-text text-muted">Anna määrä kokonais- tai desimaalilukuna (esim. 0.5, ei 1/2)</small>
 
         <label for="measuring_unit1"></label>
         <input type="text" class="form-control" name="measuring_unit" id="measuring_unit1" placeholder="Yksikkö" required>
+        <small id="measuring_unit" class="form-text text-muted">Esimerkiksi: dl, tl, rkl...</small>
 
         <label for="ingredient1"></label>
         <input type="text" class="form-control" name="ingredient" id="ingredient1" placeholder="Ainesosa" required><br>
@@ -30,15 +33,15 @@
         <div id="moreIngredients"></div>
 
         <button type="button" id="add" class="btn btn-primary">Lisää vielä yksi ainesosa!</button><br><br>
-        <button type="button" id="save" class="btn btn-primary">Tallenna ainesosat ja jatka ohjeeseen!</button><br><br>
+        <button type="button" id="save" class="btn btn-danger">Tallenna ainesosat ja jatka ohjeeseen!</button><br><br>
 
-        <small id="instrHelp" class="form-text text-muted">Viimeiseksi lisää ohje, mutta älä tarinoi. Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
-        <label for="inputInstructions"></label>
-        <input type="text" name="instructions" class="form-control" id="inputInstructions" placeholder="Valmistusohje" required><br>
+        <small id="instrHelp" class="form-text text-muted">Viimeiseksi lisää ohje, mutta älä tarinoi.<br> Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
+        <textarea type="text" rows="10" cols="50" id="instructions" name="instructions" placeholder="Valmistusohje" required></textarea><br><br>
 
-    <button type="submit" name="submit_button" class="btn btn-primary" id="submit_it">Lisää resepti!</button>
-    </div></form>
+    <button type="submit" name="submit_button" class="btn btn-primary" id="submit_it">Tallenna resepti!</button>
+    </form>
 </div>
-
+    <div class="flex-sm-column"></div>
+</div>
 
 {% endblock %}

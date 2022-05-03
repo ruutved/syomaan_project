@@ -2,8 +2,9 @@
 {% block title %}Muokkaa reseptiä{% endblock %}
 {% block head %}
     {{ super() }}
-<script src="https://unpkg.com/axios/dist/axios.min.js" xmlns="http://www.w3.org/1999/html"></script>
-<script src="../static/js/script-mod.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js" xmlns="http://www.w3.org/1999/html"
+        xmlns="http://www.w3.org/1999/html"></script>
+
 {% endblock %}
 {% block content %}
     {{ super() }}
@@ -12,26 +13,75 @@
         <form id="recipe_form">
             <p><label for="rec_name">Reseptin nimi: </label>
             <input type="text" id="rec_name" name="rec_name" value="{{recipe.recipe_name}}"/></p>
+            <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/><br>
+            <p><label for="instructions">Valmistusohje: </label><br>
+            <textarea type="text" rows="10" cols="50" id="instructions" name="instructions" >{{recipe.description}}</textarea></p>
 
             <p>Ainesosat:</p>
-            {% for ingredient in recipe['ingredients'] %}
-            {% set elemId = range(1, 4000) | random %}
-             <input type="text" id="mod_quantity{{elemId}}" name="quantity" value="{{ingredient['quantity']}}" />
-            <input type="text" id="mod_measuring_unit{{elemId}}" name="measuring_unit" value="{{ingredient['measuring_unit']}}"/>
-            <input type="text" id="mod_ingredient{{elemId}}" name="ingredient" value="{{ingredient['ingredient']}}" /><br>
+
+<div class="modifyIngredients">{% for ingredient in recipe['ingredients'] %}
+            <input type="text" class="mod_quantity" id="mod_quantity" name="quantity" value="{{ingredient['quantity']}}" />
+            <input type="text" class="measuring_unit" id="mod_measuring_unit" name="measuring_unit" value="{{ingredient['measuring_unit']}}"/>
+            <input type="text" class="ingredient" id="mod_ingredient" name="ingredient" value="{{ingredient['ingredient']}}" /><br>
+            <a href="{{ url_for('delete_ingredient', quantity=quantity, measuring_unit=measuring_unit, ingredient=ingredient, recipe_name=recipe.recipe_name)}}">Poista tämä ainesosa</a><br><br>
             {% endfor %}
-            <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/>
 
-            <div id="moreIngredients"></div>
+</div>
 
-            <button type="button" id="addIngredient" class="btn btn-primary" value="Lisää uusi ainesosa!"></button><br><br>
-            <input type="button" id="saveIngredients" class="btn btn-primary" value="Tallenna ainesosat" />
+<div id="moreIngredients"> </div>
 
-            <p><label for="instructions">Valmistusohje: </label><br>
-            <input type="text" id="instructions" name="instructions" value="{{recipe.description}}" /></p>
+            <button type="button" id="addIngredient" class="btn btn-primary" value="add" onclick="addInput()">Lisää uusi ainesosa!</button><br><br>
+           <p><input type="submit" id="submit" class="btn btn-primary" value="Tallenna resepti!" onclick="return confirm_alert(this)"/></p>
 
-            <p><input type="button" id="mod_submit" class="btn btn-primary" value="Tallenna resepti!"/></p>
-        </form>
+</form>
+<script>
+
+    let num = 0;
+
+    function addInput(){
+        num++;
+        let newInput = '<label for="mod_quantity"></label>\n' +
+        '<input type="text" class="form-control" name="quantity" ' +
+        'id="mod_quantity'+num+'" placeholder="Määrä" >' +
+        '<label for="mod_measuring_unit"></label>'+
+        '<input type="text" class="form-control" name="measuring_unit" id="mod_measuring_unit'+num+'" placeholder="Yksikkö">' +
+        '<label for="mod_ingredient"></label>'+
+        '<input type="text" class="form-control" name="ingredient" id="mod_ingredient'+num+'" placeholder="Ainesosa" ><br>'
+        document.getElementById('moreIngredients').innerHTML += newInput;
+    }
+
+
+     const form = document.getElementById("recipe_form")
+
+ form.addEventListener("submit", function(e) {
+     e.preventDefault();
+     let data = new FormData(form);
+
+     axios({
+         method: "put",
+         url: "/",
+         data: data,
+         header: {"Content-Type": "application/json"}
+     })
+         .then(function(response) {
+             console.log("Response, data = " + response.data)
+
+             if (response.status == 200) {
+                 form.reset()
+                 window.location = "/";
+             }
+         })
+         .catch(function (response) {
+             console.log(response);
+         })
+ })
+ function confirm_alert() {
+     return confirm("Resepti päivitetty!")
+ }
+
+</script>
+
+
 
 
 {% endblock %}
