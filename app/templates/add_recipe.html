@@ -8,35 +8,56 @@
 {% block content %}
     {{ super() }}
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-danger">
+     {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
 <div class="row">
     <div class="flex-sm-column"></div>
     <div class="flex-lg-column rounded"><h1>Lisää uusi resepti</h1>
     <form action="" method="post">
-        <label></label>
         <label for="inputName"></label>
-        <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required>
-        <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen nimi.</small><br>
-    <small id="helper" class="form-text text-muted">Lisää seuraavaksi määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
-        Paina "Lisää ainesosa" -nappia lisätäksesi ainesosia.</small>
+        <small id="fullName" class="form-text text-muted">Lisää jokin reseptiä hyvin kuvaava, yksinkertainen ja uniikki nimi.</small>
+        <input name="rec_name" class="form-control" id="inputName" size="50" aria-describedby="emailHelp" placeholder="Reseptin nimi" required><br>
 
+        <small id="categoryName" class="form-text text-muted">Mihin kategoriaan resepti kuuluu? Valitse yksi.</small>
+
+        <select name="category" class="custom-select" id="category" required><label for="category"></label>
+            <option value="aamuiltapala">Aamu-/iltapala</option>
+            <option value="pääruoka">Pääruoka</option>
+            <option value="välipala">Välipala</option>
+            <option value="jälkiruoka">Jälkiruoka</option>
+        </select><br><br>
+
+
+    <small id="helper" class="form-text text-muted">Lisää nyt ainesosat yksitellen. Syötä määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
+        Paina "Lisää ainesosa" -nappia lisätäksesi aina seuraavan ainesosan.</small>
+        <div class="addingr">
         <label for="quantity1"></label>
-        <input type="text" class="form-control" name="quantity" id="quantity1" placeholder="Määrä" required>
-        <small id="quantity" class="form-text text-muted">Anna määrä kokonais- tai desimaalilukuna (esim. 0.5, ei 1/2)</small>
-
+        <input type="text" class="form-control" name="quantity" style="width: 80px" id="quantity1" placeholder="Määrä" required>
+        <small id="quantity" class="form-text text-muted">Esim. 1, 0.5, 2..</small>
+        </div>
+        <div class="addingr">
         <label for="measuring_unit1"></label>
-        <input type="text" class="form-control" name="measuring_unit" id="measuring_unit1" placeholder="Yksikkö" required>
-        <small id="measuring_unit" class="form-text text-muted">Esimerkiksi: dl, tl, rkl...</small>
-
+        <input type="text" class="form-control" style="width: 100px" name="measuring_unit" id="measuring_unit1" placeholder="Yksikkö" required>
+        <small id="measuring_unit" class="form-text text-muted">Esim. dl, tl, rkl...</small>
+        </div>
+        <div class="addingr">
         <label for="ingredient1"></label>
-        <input type="text" class="form-control" name="ingredient" id="ingredient1" placeholder="Ainesosa" required><br>
-
-        <div id="moreIngredients"></div>
+        <input type="text" class="form-control" name="ingredient" id="ingredient1" placeholder="Ainesosa" required>
+            <small id="ingredient" class="form-text text-muted">Sanomattakin selvää - ainesosan nimi tähän</small>
+        </div><br>
+        <div id="moreIngredients"></div><br>
 
         <button type="button" id="add" class="btn btn-primary">Lisää vielä yksi ainesosa!</button><br><br>
         <button type="button" id="save" class="btn btn-danger">Tallenna ainesosat ja jatka ohjeeseen!</button><br><br>
 
         <small id="instrHelp" class="form-text text-muted">Viimeiseksi lisää ohje, mutta älä tarinoi.<br> Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
-        <textarea type="text" rows="10" cols="50" id="instructions" name="instructions" placeholder="Valmistusohje" required></textarea><br><br>
+        <textarea class="form-control" type="text" rows="10" cols="50" id="inputInstructions" name="instructions" placeholder="Valmistusohje" required></textarea><br><br>
 
     <button type="submit" name="submit_button" class="btn btn-primary" id="submit_it">Tallenna resepti!</button>
     </form>

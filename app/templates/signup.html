@@ -14,19 +14,15 @@
 {% endif %}
 {% endwith %}
 
-<!-- Tänne tehdään div (3-column layout) - jotta saa nätisti tuon lomakkeen keskelle
-Logo vasemmalla, muut linkit aina oikealla paitsi mobile versionissa ne on sitten toggled -->
+<div class="row">
+    <div class="flex-sm-column"></div>
+    <div class="flex-lg-column rounded">
 
+<h1>Rekisteröidy tästä!</h1><br>
+    <h6>Rekisteröityneenä käyttäjänä voit lisätä, muokata ja poistaa omia reseptejä.
+    Lisäksi voit lisätä reseptejä viikkosuunnitelmaan ja tulostaa sen perusteella kootun ostoslistan.</h6><br>
 
-<div id="content">
-
-
-    <p>Rekisteröityneenä käyttäjänä voit:</p>
-    <li>Lisätä, muokata ja poistaa omia reseptejä</li>
-    <li>Luoda viikkosuunnitelman</li>
-    <li>Koota viikkosuunnitelman perusteella ostoslistan</li>
-    <h2>Rekisteröidy tästä!</h2>
-    <p>Oletko jo rekisteröitynyt? Siirry <a href="{{ url_for('login') }}">kirjautumissivulle!</a></p>
+    <h6>Oletko jo rekisteröitynyt? Siirry <a href="{{ url_for('login') }}">kirjautumissivulle!</a></h6>
 <form action="" method="post">
     <div class="form-group">
         <label></label>
@@ -52,7 +48,8 @@ Logo vasemmalla, muut linkit aina oikealla paitsi mobile versionissa ne on sitte
 
     <button type="submit" class="btn btn-primary">Rekisteröidy!</button>
 
+
 </form>
-</div>
+    </div><div class="flex-sm-column"></div></div>
 
 {% endblock %}

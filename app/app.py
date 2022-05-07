@@ -1,5 +1,3 @@
-from collections import Counter, defaultdict
-
 from flask import Flask, redirect, url_for, render_template, flash, request, jsonify, make_response
 from flask_login import LoginManager, UserMixin, login_required, logout_user, login_user, current_user
 from flask_mongoengine import MongoEngine
@@ -26,6 +24,7 @@ class Recipe(db.Document):
     recipe_name = db.StringField(default=True)
     ingredients = db.ListField(default=True)
     description = db.StringField(default=True)
+    category = db.StringField(default=True)
     creator = db.StringField(default=True)
 
 
@@ -50,6 +49,7 @@ def home():
 
     else:
 
+        # Seuraava koodi muokkaa reseptiä:
         quantities = request.form.getlist(key="quantity")
         m_units = request.form.getlist(key="measuring_unit")
         ingredients = request.form.getlist(key="ingredient")
@@ -108,7 +108,9 @@ def plan():
         if item["recipe_name"] in recipes:
             # Käydään läpi kaikki ainesosat:
             for ingredient in item["ingredients"]:
+                # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan:
                 if ingredient["ingredient"] != "vettä":
+                    # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
                     if ingredient not in pre_shopping_list:
                         pre_shopping_list.append(ingredient)
 
@@ -127,7 +129,6 @@ def plan():
             final_list[key] = {"quantity": float(item["quantity"]), "measuring_unit": item["measuring_unit"],
                             "ingredient": item["ingredient"]}
 
-
     return render_template('plan.html', name=current_user.user_name,
                            recipes=recipes, final_list=final_list)
 
@@ -144,7 +145,9 @@ def prep_add_plan(recipe_name):
 @login_required
 def added_to_plan(recipe_name):
 
-    user = User.objects(user_name=current_user.user_name).first()
+    # Etsitään käyttäjä sähköpostiosoitteen perusteella, jotta
+    # voidaan lisätä tälle resepti
+    user = User.objects(email=current_user.email).first()
 
     user.recipes.append(recipe_name)
     user.save()
@@ -156,7 +159,7 @@ def added_to_plan(recipe_name):
 @login_required
 def delete_from_plan(recipe_name):
 
-    user = User.objects(user_name=current_user.user_name).first()
+    user = User.objects(email=current_user.email).first()
 
     if recipe_name in user.recipes:
         user.recipes.remove(recipe_name)
@@ -209,16 +212,25 @@ def add_recipe():
 
     elif request.method == "POST":
         recipe_name = request.form.get("rec_name")
-        ingredients = ingr_list
-        description = request.form.get("instructions")
-        creator = current_user.email
 
-        new_recipe = Recipe(recipe_name=recipe_name,
-                            ingredients=ingredients,
-                            description=description,
-                            creator=creator)
+        existing_recipe = Recipe.objects(recipe_name=recipe_name).first()
+        if not existing_recipe:
 
-        new_recipe.save()
+            ingredients = ingr_list
+            description = request.form.get("instructions")
+            creator = current_user.email
+
+            new_recipe = Recipe(recipe_name=recipe_name,
+                                ingredients=ingredients,
+                                description=description,
+                                creator=creator)
+
+            new_recipe.save()
+
+        else:
+            flash('Tämänniminen resepti on jo olemassa. Keksi jokin uusi nimi!')
+            return redirect(url_for('add_recipe'))
+
         return redirect(url_for('home'))
 
     else:
@@ -251,7 +263,7 @@ def login():
                     flash('Väärä salasana')
                     return redirect(url_for('login'))
         else:
-            flash('Käyttäjää ei löydy')
+            flash('Käyttäjää ei löydy!')
             return redirect(url_for('login'))
 
     else:
@@ -318,7 +330,7 @@ def delete_recipe(recipe_name):
 
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_name = recipe.recipe_name
-    user = User.objects(user_name=current_user.user_name).first()
+    user = User.objects(user_name=current_user.email).first()
 
     if not recipe:
         return jsonify({"error": "data not found"})

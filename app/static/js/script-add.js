@@ -14,11 +14,6 @@
             submitter.addEventListener('click', saveInput);
         }
 
-        let remover = document.getElementById('removeIngr');
-        if (remover) {
-            remover.addEventListener('click', removeIngredient);
-        }
-            }
 
     function saveInput() {
         if (num === 1) {
@@ -56,24 +51,16 @@
 
     }
 
-    function removeIngredient () {
-        let children = document.getElementById("moreIngredients");
-          if(children.length > 0) {
-            document.body.removeChild(children[children.length - 1]);
-
-        /* Nappia painamalla pitää voida poistaa ainesosa.
-       * Jos on ehditty tallentaa se jo ainesosiin niin se pitää myös
-       * poistaa niistä. */
-    }}
-
     function addInput(){
         num++;
-        let newInput = '<label for="quantity"></label>\n' +
-        '<input type="text" class="form-control" name="quantity" ' +
-        'id="quantity1'+num+'" placeholder="Määrä" >' +
-        '<label for="measuring_unit"></label>'+
-        '<input type="text" class="form-control" name="measuring_unit" id="measuring_unit1'+num+'" placeholder="Yksikkö">' +
-        '<label for="ingredient"></label>'+
-        '<input type="text" class="form-control" name="ingredient" id="ingredient1'+num+'" placeholder="Ainesosa" ><br><br>' ;
+        let newInput = '<div class="addingr"><label for="quantity"></label>\n' +
+        '<input type="text" class="form-control" style="width: 80px" name="quantity" ' +
+        'id="quantity1'+num+'" placeholder="Määrä"><small id="quantity" class="form-text text-muted">Esim. 1, 0.5, 2..</small></div> ' +
+        '<div class="addingr"><label for="measuring_unit"></label>'+
+        '<input type="text" class="form-control" style="width: 100px" name="measuring_unit" id="measuring_unit1'+num+'" ' +
+         'placeholder="Yksikkö"><small id="quantity" class="form-text text-muted">Esim. dl, tl, rkl...</small></div>' +
+        '<div class="addingr"><label for="ingredient"></label>'+
+        '<input type="text" class="form-control" name="ingredient" id="ingredient1'+num+'" ' +
+         'placeholder="Ainesosa"><small id="quantity" class="form-text text-muted">Sanomattakin selvää - ainesosan nimi tähän</small></div><br><br>' ;
         document.getElementById('moreIngredients').innerHTML += newInput;
-    }
+    }}

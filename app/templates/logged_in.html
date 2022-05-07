@@ -6,6 +6,12 @@
 {% block content %}
     {{ super() }}
 
-<p>Olet nyt kirjautunut sisään, {{ name }}!</p>
+<div class="row">
+    <div class="flex-sm-column"></div>
+    <div class="flex-lg-column rounded">
+
+        <h1 style="align-content: center">Olet nyt kirjautunut sisään, {{ name }}!</h1></div>
+    <div class="flex-sm-column"></div>
+</div>
 
 {% endblock %}

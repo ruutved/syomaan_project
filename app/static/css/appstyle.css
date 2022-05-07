@@ -1,14 +1,21 @@
 body {
-    font-family: "Verdana", monospace;
-    background: lightgoldenrodyellow;
+    background-image: url(../taustakuva.jpg);
     align-items: center;
     overflow-x: hidden;
     padding-top: 100px;
+    text-align: center;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 p {
     margin: 30px;
     text-align: justify;
+}
+.links {
+    text-align: center;
 }
 
 li {
@@ -17,25 +24,15 @@ li {
 
 form {
     margin: 30px;
+    justify-content: center;
 }
 
-input {
-    width: 50%;
-    margin: 30px;
+input[type=checkbox] {
+    width: 5%;
 }
-
 
 h2 {
     margin: 30px;
-}
-
-
-#remember {
-    white-space: nowrap;
-}
-
-#remember label {
-    padding-left: 0.4em;
 }
 
 #helper {
@@ -45,31 +42,49 @@ h2 {
 table {
     margin: 30px;
 }
-* {
-  box-sizing: border-box;
-}
 
 .row {
     height: 70vh;
+    padding: 10px;
 }
 
-.container {
-  display: flex;
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
 }
+table, th, td, tr {
+    border: 1px solid black;
+    height: fit-content;
+
+    }
 
 .item {
-  background: mistyrose;
-  flex-flow: column;
+  background: navajowhite;
+  flex-flow: nowrap;
+  width: 30%;
+  float: left;
+  margin: 10px auto auto auto;
+  height: auto;
+  opacity: 0.8;
+
 }
 
 h4 {
     margin: 30px;
 }
 
+h1, h6 {
+    text-align: center;
+}
+
 #intro {
     margin: auto;
+    text-align: center;
     align-self: center;
     position: relative;
+    background: black;
+    opacity: 0.7;
 }
 
 @media screen and (max-width: 800px) {
@@ -80,7 +95,7 @@ h4 {
 
 @media screen and (min-width: 801px) {
     #intro {
-        width: 55%;
+        width: 58.5%;
     }
 }
 
@@ -91,8 +106,23 @@ h4 {
 .flex-lg-column {
     width: 50%;
     background: linen;
-    text-align: center;
     height: auto;
+    opacity: 0.9;
+}
+
+.flex-md-column {
+    width: 25%;
+    float: left;
+    margin: 10px;
+    background: linen;
+    height: auto;
+    opacity: 0.9;
+}
+
+@media screen and (max-width: 800px) {
+    .flex-md-column, .item {
+        width: 100%;
+    }
 }
 
 #printButton {
@@ -103,10 +133,25 @@ h4 {
     margin: 0 0 0 30px;
 }
 
-* {
-    box-sizing: border-box;
-}
-
 textarea {
     max-width: 100%;
+}
+
+.addingr {
+    display: inline-block;
+}
+
+.addingr label {
+    display: block;
+}
+
+.is-danger {
+    text-align: center;
+    font-size: large;
+    background: crimson;
+    color: white;
+}
+
+#modButtons, .modifyIngredients, .addingr, #chooseDay {
+    text-align: center;
 }
