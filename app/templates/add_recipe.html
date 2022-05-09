@@ -27,15 +27,16 @@
         <small id="categoryName" class="form-text text-muted">Mihin kategoriaan resepti kuuluu? Valitse yksi.</small>
 
         <select name="category" class="custom-select" id="category" required><label for="category"></label>
-            <option value="aamuiltapala">Aamu-/iltapala</option>
-            <option value="pääruoka">Pääruoka</option>
-            <option value="välipala">Välipala</option>
-            <option value="jälkiruoka">Jälkiruoka</option>
+            <option value="Aamu-/iltapala">Aamu-/iltapala</option>
+            <option value="Pääruoka">Pääruoka</option>
+            <option value="Välipala">Välipala</option>
+            <option value="Jälkiruoka">Jälkiruoka</option>
         </select><br><br>
 
 
     <small id="helper" class="form-text text-muted">Lisää nyt ainesosat yksitellen. Syötä määrä, yksikkö ja ainesosan nimi - esim. 1 tl suolaa.
         Paina "Lisää ainesosa" -nappia lisätäksesi aina seuraavan ainesosan.</small>
+    <div class="newIngredients">
         <div class="addingr">
         <label for="quantity1"></label>
         <input type="text" class="form-control" name="quantity" style="width: 80px" id="quantity1" placeholder="Määrä" required>
@@ -50,11 +51,12 @@
         <label for="ingredient1"></label>
         <input type="text" class="form-control" name="ingredient" id="ingredient1" placeholder="Ainesosa" required>
             <small id="ingredient" class="form-text text-muted">Sanomattakin selvää - ainesosan nimi tähän</small>
+        </div></div><br>
+        <div id="moreIngredients">
+            <p id="more" hidden></p>
         </div><br>
-        <div id="moreIngredients"></div><br>
 
-        <button type="button" id="add" class="btn btn-primary">Lisää vielä yksi ainesosa!</button><br><br>
-        <button type="button" id="save" class="btn btn-danger">Tallenna ainesosat ja jatka ohjeeseen!</button><br><br>
+        <button type="button" id="add" class="btn btn-primary" onclick="addInput()">Lisää vielä yksi ainesosa!</button><br><br>
 
         <small id="instrHelp" class="form-text text-muted">Viimeiseksi lisää ohje, mutta älä tarinoi.<br> Keskity olennaiseen eli siihen, miten tämä ruoka valmistetaan.</small>
         <textarea class="form-control" type="text" rows="10" cols="50" id="inputInstructions" name="instructions" placeholder="Valmistusohje" required></textarea><br><br>

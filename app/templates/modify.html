@@ -19,6 +19,18 @@
             <p><label for="rec_name" style="font-weight: bold">Reseptin nimi: </label>
             <input type="text" class=form-control id="rec_name" name="rec_name" value="{{recipe.recipe_name}}"/></p>
             <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/><br>
+
+
+            <label for="category" style="font-weight: bold; margin: 0 0 0 30px;">Kategoria:</label>
+            <div id="cat" style="text-align: center">
+                <select class="custom-select" id="category" name="category" style="width: 500px;">
+                <option value={{recipe.category}}>{{recipe.category}}</option>
+                <option value="Pääruoka">Pääruoka</option>
+                <option value="Välipala">Välipala</option>
+                <option value="Jälkiruoka">Jälkiruoka</option>
+                <option value="Aamu-/iltapala">Aamu-/iltapala</option>
+            </select></div><br><br>
+
             <p><label for="instructions" style="font-weight: bold">Valmistusohje: </label><br>
             <textarea type="text" class="form-control" rows="10" cols="50" id="instructions" name="instructions" >{{recipe.description}}</textarea></p>
 
@@ -33,7 +45,8 @@
 
 </div>
 
-<div id="moreIngredients"> </div>
+<div id="moreIngredients">
+<p id="more" hidden></p></div>
 
             <div id="modButtons">
             <button type="button" id="addIngredient" class="btn btn-info" value="add" onclick="addInput()">Lisää uusi ainesosa!</button><br><br>
@@ -57,7 +70,8 @@
         '<div class="addingr"><label for="ingredient"></label>'+
         '<input type="text" class="form-control" name="ingredient" id="ingredient1'+num+'" ' +
          'placeholder="Ainesosa"><small id="quantity" class="form-text text-muted">Esim. dl, tl, rkl...</small></div><br><br>' ;
-        document.getElementById('moreIngredients').innerHTML += newInput;
+        const more = document.getElementById('more');
+        more.insertAdjacentHTML("beforebegin" ,newInput);
     }
 
 

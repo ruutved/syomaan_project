@@ -12,7 +12,7 @@
     <div class="flex-sm-column"></div>
     <div class="flex-lg-column rounded">
 <h1>Poistetaanko tämä resepti?</h1><br>
-<h4>Resepti poistetaan myös viikkosuunnitelmasta.</h4><br>
+<h3>Resepti poistetaan myös viikkosuunnitelmasta.</h3><br>
         <div class="links">
         <a class="del" href="{{url_for('delete_recipe', recipe_name=recipe['recipe_name'])}}"
        onclick="return confirm_alert(this)">Poista!</a><br><br>
@@ -21,6 +21,7 @@
                 <p style="text-align: center">{% for ingredient in recipe['ingredients'] %}
                 {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}<br>
                 {% endfor %}</p><br>
+        <p style="font-weight: bold">Valmistusohje:</p>
             <p style="text-align: justify">{{recipe.description}}</p><br>
     </div>
     <div class="flex-sm-column"></div>

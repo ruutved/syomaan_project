@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, render_template, flash, request, jso
 from flask_login import LoginManager, UserMixin, login_required, logout_user, login_user, current_user
 from flask_mongoengine import MongoEngine
 from datetime import datetime
+from itertools import repeat
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -65,7 +66,8 @@ def home():
 
         recipe.update(recipe_name=request.form["rec_name"],
                       description=request.form["instructions"],
-                      ingredients=modified_ingredients)
+                      ingredients=modified_ingredients,
+                      category=request.form["category"])
         res = make_response(jsonify({"message": "recipe updated"}))
         return res
 
@@ -98,6 +100,9 @@ def profile():
 def plan():
 
     recipes = current_user.recipes
+    # Tehdään uusi lista resepteistä siksi, että jos resepti lisätään viikkosuunnitelmaan
+    # useammin kuin kerran, niin saadaan niistä kaikista yhteenlasketut ainekset ostoslistaan
+    shortlist = []
     pre_shopping_list = []
 
     get_ingredients = Recipe.objects
@@ -106,28 +111,61 @@ def plan():
     for item in get_ingredients:
         # Jos reseptin nimi on sama kuin käyttäjän viikkosuunnitelman lisäämän reseptin:
         if item["recipe_name"] in recipes:
-            # Käydään läpi kaikki ainesosat:
-            for ingredient in item["ingredients"]:
-                # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan:
-                if ingredient["ingredient"] != "vettä":
-                    # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
-                    if ingredient not in pre_shopping_list:
-                        pre_shopping_list.append(ingredient)
+            # Lasketaan, montako kertaa kukin resepti esiintyy viikkosuunnitelmassa:
+            count = recipes.count(item["recipe_name"])
+            # Lisätään kaikki reseptien nimet shortlistiin, myös ne jotka esiintyvät monta kertaa:
+            shortlist.extend(repeat(item["recipe_name"], count))
+            # Käydään läpi shortlist:
+            for food in shortlist:
+                # Jos nimi listalla on sama kuin minkä tahansa tietokannassa olevan reseptin:
+                if food == item["recipe_name"]:
+                    # Käydään läpi reseptin ainesosat tietokannassa:
+                    for ingredient in item["ingredients"]:
+                        # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan, joten jätetään se pois:
+                        if ingredient["ingredient"] != "vettä":
+                        # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
+                            pre_shopping_list.append(ingredient)
 
+    # Suoritetaan tarvittavat yksikkömuunnokset, jotta saadaan ostoslistaan samat ainesosat yhdessä yksikössä.
+    # Tässä tapauksessa kaikki ml, cl, l, rkl tai tl -muodossa olevat muutetaan desilitroiksi. Kilogrammat
+    # muutetaan grammoiksi.
+
+    for item in pre_shopping_list:
+        if item["measuring_unit"] == "ml" or item["measuring_unit"] == "millilitraa":
+            item["quantity"] = float(item["quantity"]) * 0.01
+            item["measuring_unit"] = "dl"
+        elif item["measuring_unit"] == "cl" or item["measuring_unit"] == "senttilitraa":
+            item["quantity"] = float(item["quantity"]) * 0.1
+            item["measuring_unit"] = "dl"
+        elif item["measuring_unit"] == "l" or item["measuring_unit"] == "litraa":
+            item["quantity"] = float(item["quantity"]) * 10
+            item["measuring_unit"] = "dl"
+        elif item["measuring_unit"] == "rkl" or item["measuring_unit"] == "ruokalusikallista":
+            item["quantity"] = float(item["quantity"]) * 0.15
+            item["measuring_unit"] = "dl"
+        elif item["measuring_unit"] == "tl" or item["measuring_unit"] == "teelusikallista":
+            item["quantity"] = float(item["quantity"]) * 0.05
+            item["measuring_unit"] = "dl"
+        elif item["measuring_unit"] == "kg" or item["measuring_unit"] == "kilogrammaa":
+            item["quantity"] = float(item["quantity"]) * 1000
+            item["measuring_unit"] = "g"
+        else:
+            pass
 
     # Seuraava rakenne varmistaa sen, että useaan kertaan viikkosuunnitelmassa
     # esiintyvät ainesosat tulostuvat ostoslistaan kukin vain kerran, ja niiden kanssa
     # lopullinen tarvittava määrä. Esim. jos yhdessä reseptissä on 2 kananmunaa ja
     # toisessa 4, niin ostoslistaan tulostuu "6 kpl kananmunaa".
+    #
     final_list = {}
     for item in pre_shopping_list:
         key = (item["ingredient"])
         if key in final_list:
-            final_list[key] = {"quantity": int(item["quantity"]) + int(final_list[key]["quantity"]),
-                            "measuring_unit": item["measuring_unit"], "ingredient": item["ingredient"]}
+            final_list[key] = {"quantity": float(item["quantity"]) + float(final_list[key]["quantity"]),
+                                "measuring_unit": item["measuring_unit"], "ingredient": item["ingredient"]}
         else:
             final_list[key] = {"quantity": float(item["quantity"]), "measuring_unit": item["measuring_unit"],
-                            "ingredient": item["ingredient"]}
+                               "ingredient": item["ingredient"]}
 
     return render_template('plan.html', name=current_user.user_name,
                            recipes=recipes, final_list=final_list)
@@ -174,19 +212,16 @@ def delete_from_plan(recipe_name):
 def delete_ingredient(recipe_name):
 
     ingredient = request.args.get('ingredient')
-
     recipe = Recipe.objects(recipe_name=recipe_name).first()
-
     ingredients = recipe.ingredients
 
     for item in ingredients:
         print(item)
         if str(item) == str(ingredient):
-            print("this is it")
             ingredients.remove(item)
             recipe.save()
         else:
-            print("this is not it")
+            return jsonify({"error": ""})
 
     return redirect(url_for('modify', recipe_name=recipe_name))
 
@@ -194,35 +229,41 @@ def delete_ingredient(recipe_name):
 @app.route("/modify_ingredient/<recipe_name>")
 @login_required
 def modify_ingredient(recipe_name):
-
     recipe_name = Recipe.objects(recipe_name=recipe_name).first()
-
     return redirect(url_for('modify', recipe_name=recipe_name))
 
 
-@app.route("/add_recipe", methods=["POST", "PUT", "GET"])
+@app.route("/add_recipe", methods=["POST", "GET"])
 @login_required
 def add_recipe():
 
-    global ingr_list
-    if request.method == "PUT":
-        ingr_list = request.get_json(force=True)
-        res = make_response(jsonify({"message": "no niin"}))
-        return res
+    if request.method == "POST":
 
-    elif request.method == "POST":
         recipe_name = request.form.get("rec_name")
-
         existing_recipe = Recipe.objects(recipe_name=recipe_name).first()
+
         if not existing_recipe:
 
-            ingredients = ingr_list
+            recipe_category = request.form.get("category")
+
+            add_quantities = request.form.getlist(key="quantity")
+            add_units = request.form.getlist(key="measuring_unit")
+            add_ingredients = request.form.getlist(key="ingredient")
+
+            added_ingredients = []
+
+            for j, k, x in zip(add_quantities, add_units, add_ingredients):
+                ingr = {'quantity': j, 'measuring_unit': k, 'ingredient': x}
+                added_ingredients.append(ingr)
+            print(added_ingredients)
+
             description = request.form.get("instructions")
             creator = current_user.email
 
             new_recipe = Recipe(recipe_name=recipe_name,
-                                ingredients=ingredients,
+                                ingredients=added_ingredients,
                                 description=description,
+                                category=recipe_category,
                                 creator=creator)
 
             new_recipe.save()
@@ -330,15 +371,21 @@ def delete_recipe(recipe_name):
 
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_name = recipe.recipe_name
-    user = User.objects(user_name=current_user.email).first()
+    user = User.objects(email=current_user.email).first()
 
     if not recipe:
         return jsonify({"error": "data not found"})
     else:
-        user.recipes.remove(recipe_name)
-        user.save()
-        print(user.recipes)
-        recipe.delete()
+        # Jos käyttäjä on lisännyt reseptin viikkosuunnitelmaansa,
+        # niin poistetaan se ensin suunnitelmasta ja sitten kokonaan:
+        if recipe in user.recipes:
+            user.recipes.remove(recipe_name)
+            user.save()
+            recipe.delete()
+        else:
+            # Jos resepti ei ole viikkosuunnitelmassa, poistetaan se
+            # vain resepteistä.
+            recipe.delete()
 
         return redirect(url_for("home"))
 

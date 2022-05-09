@@ -53,10 +53,10 @@ table {
     display: table;
     clear: both;
 }
+
 table, th, td, tr {
     border: 1px solid black;
     height: fit-content;
-
     }
 
 .item {
@@ -66,15 +66,18 @@ table, th, td, tr {
   float: left;
   margin: 10px auto auto auto;
   height: auto;
+  line-height: normal;
   opacity: 0.8;
+  display: none;
 
 }
 
 h4 {
     margin: 30px;
+
 }
 
-h1, h6 {
+h1, h3, h6 {
     text-align: center;
 }
 
@@ -139,10 +142,15 @@ textarea {
 
 .addingr {
     display: inline-block;
+    float: none;
 }
 
 .addingr label {
     display: block;
+}
+
+label {
+    text-align: left;
 }
 
 .is-danger {
@@ -152,6 +160,25 @@ textarea {
     color: white;
 }
 
-#modButtons, .modifyIngredients, .addingr, #chooseDay {
+#modButtons, .modifyIngredients, .addingr, #moreIngredients, .newIngredients {
     text-align: center;
+}
+
+select {
+    max-width: 100%;
+}
+
+#myBtnContainer {
+    width: 50%;
+    text-align: center;
+}
+
+#selectorContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.show {
+  display: block;
 }

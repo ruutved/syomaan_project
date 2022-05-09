@@ -10,31 +10,87 @@
 <p style="text-align: center; color: white;">Löydä itsellesi ja perheellesi sopivat reseptit ja lisää ne omaan viikkosuunnitelmaasi.<br>
 Viikkosuunnitelma-sivulla näet automaattisesti luodun ostoslistan, joka sisältää koko viikon ostokset!</p><br></div><br>
 
-
+<div id="selectorContainer">
+    <div id="myBtnContainer">
+    <button class="btn active btn-dark" onclick="filterSelection('all')">Kaikki reseptit</button>
+     <button class="btn btn-dark" onclick="filterSelection('Aamu-/iltapala')">Aamu- ja iltapalat</button>
+     <button class="btn btn-dark" onclick="filterSelection('Pääruoka')">Pääruoat</button>
+    <button class="btn btn-dark" onclick="filterSelection('Välipala')">Välipalat</button>
+    <button class="btn btn-dark" onclick="filterSelection('Jälkiruoka')">Jälkiruoat</button>
+    </div>
+</div>
 <div class="row">
             {% if recipes|length > 0 %}{% for recipe in recipes %}
-    <div class="item rounded">
+    <div class="item rounded filterDiv {{recipe.category}}">
             <h4 id="name" style="font-weight: bold">{{recipe.recipe_name}}</h4>
             <p style="font-weight: bold">Ainesosat:</p>
             <p>{% for ingredient in recipe['ingredients'] %}
                         {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}<br>
                 {% endfor %}</p>
-            <p style="font-weight: bold">Ohje:</p>
+            <p style="font-weight: bold">Valmistusohje:</p>
             <p id="description">
                 {{recipe.description}} </p>
+        <h6 id="category" style="margin: 0 0 20px 30px; text-align: left">Kategoria: {{recipe.category}}</h6>
+    {% if not current_user.is_authenticated %}
+    </div>
+    {% endif %}
+        {% if current_user.is_authenticated %}
             {% if recipe.creator == current_user.email %}
             <p><a href="{{ url_for('prep_delete', recipe_name=recipe['recipe_name'])}}">Poista</a></p>
             <p><a href="{{ url_for('modify', recipe_name=recipe['recipe_name'])}}">Muokkaa</a></p>
             {% endif %}
-            {% if current_user.is_authenticated %}
             <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/>
             <p><a href="{{ url_for('prep_add_plan', recipe_name=recipe['recipe_name'])}}">Lisää viikkosuunnitelmaan</a></p><br>
-            </div>{% endif %}{% endfor %}<br>
+            </div>
+        {% endif %}
+    {% endfor %}<br>
         {% else %}
         <h3>Ei vielä reseptejä! <a href="{{ url_for('add_recipe')}}">Lisää ensimmäinen!</a></h3>
         {% endif %}
 
-</div>
+<script>
+
+filterSelection("all")
+function filterSelection(c) {
+  let x, i;
+  x = document.getElementsByClassName("filterDiv");
+  if (c === "all") c = "";
+  for (i = 0; i < x.length; i++) {
+    removeCategory(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) addCategory(x[i], "show");
+  }
+}
+
+function addCategory(element, name) {
+  let i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) === -1) {element.className += " " + arr2[i];}
+  }
+}
+
+function removeCategory(element, name) {
+  let i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);
+    }
+  }
+  element.className = arr1.join(" ");
+}
+let btnContainer = document.getElementById("myBtnContainer");
+let btns = btnContainer.getElementsByClassName("btn btn-dark");
+for (let i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function(){
+    let current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+</script>
 
 
 {% endblock %}

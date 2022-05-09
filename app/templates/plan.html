@@ -8,10 +8,9 @@
 
 <div class="row">
     <div class="flex-sm-column"></div>
+    {% if recipes|length > 0 %}
     <div class="flex-md-column rounded">
 <h2>Viikkosuunnitelma - {{ name }}</h2><br>
-
-    {% if recipes|length > 0 %}
     <table>
     <tr>
         <th>Viikonpäivä</th>
@@ -22,9 +21,8 @@
         <td><input type="text" class="form-control"></td>
         <td id="name">{{recipe_added}} <a href="{{ url_for('delete_from_plan', recipe_name=recipe_added)}}">Poista</a>
         {% endfor %}</td>
-
-
-    </table></div>
+    </table>
+    </div>
 <div class="flex-md-column rounded">
     <div id="ostoslista">
         <h2>Ostoslista</h2><br>
@@ -33,13 +31,15 @@
         {{value.quantity}} {{value.measuring_unit}} {{value.ingredient}}<br>
         {% endfor %}</p>
         <button class="btn btn-outline-primary" id="printButton" onclick="window.print()">Tulosta tämä sivu</button><br><br><div></div>
-
     </div>
+</div>
         {% else %}
-        <p>Et ole vielä lisännyt viikkosuunnitelmaasi yhtään reseptiä.
-            <a href="{{ url_for('home')}}">Palaa etusivulle lisätäksesi reseptejä.</a></p>
-        {% endif %}</table></div>
-    <div class="flex-sm-column"></div></div>
+    <div class="flex-lg-column rounded" style="height: 500px; text-align: center">
+        <h1>Et ole vielä lisännyt viikkosuunnitelmaasi yhtään reseptiä.</h1><br><br>
+            <a href="{{ url_for('home')}}" style="font-size: larger">Palaa etusivulle lisätäksesi reseptejä.</a>
+        {% endif %}</div>
+    <div class="flex-sm-column"></div>
+</div>
 
 
 {% endblock %}
