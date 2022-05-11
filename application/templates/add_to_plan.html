@@ -11,9 +11,9 @@
 
 <h1>Lisätäänkö {{ recipe_name }} viikkosuunnitelmaan?</h1><br>
         <div class="links">
-        <a class="del" href="{{url_for('added_to_plan', recipe_name=recipe['recipe_name'])}}"
+        <a class="del" href="{{url_for('plan.added_to_plan', recipe_name=recipe['recipe_name'])}}"
        onclick="return confirm_alert(this)">Lisää resepti viikkosuunnitelmaan</a><br><br>
-        <a class="del" href="{{url_for('home')}}">Palaa etusivulle</a><br><br></div>
+        <a class="del" href="{{url_for('auth.home')}}">Palaa etusivulle</a><br><br></div>
             <h6>{{recipe.recipe_name}}</h6><br>
 
                 <p style="text-align: center">{% for ingredient in recipe['ingredients'] %}

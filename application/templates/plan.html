@@ -13,13 +13,12 @@
 <h2>Viikkosuunnitelma - {{ name }}</h2><br>
     <table>
     <tr>
-        <th>Viikonpäivä</th>
         <th>Resepti</th>
 
     </tr>{% for recipe_added in recipes %}
     <tr>
         <td><input type="text" class="form-control"></td>
-        <td id="name">{{recipe_added}} <a href="{{ url_for('delete_from_plan', recipe_name=recipe_added)}}">Poista</a>
+        <td id="name">{{recipe_added}} <a href="{{ url_for('plan.delete_from_plan', recipe_name=recipe_added['recipe_name'])}}">Poista</a>
         {% endfor %}</td>
     </table>
     </div>
@@ -36,7 +35,7 @@
         {% else %}
     <div class="flex-lg-column rounded" style="height: 500px; text-align: center">
         <h1>Et ole vielä lisännyt viikkosuunnitelmaasi yhtään reseptiä.</h1><br><br>
-            <a href="{{ url_for('home')}}" style="font-size: larger">Palaa etusivulle lisätäksesi reseptejä.</a>
+            <a href="{{ url_for('auth.home')}}" style="font-size: larger">Palaa etusivulle lisätäksesi reseptejä.</a>
         {% endif %}</div>
     <div class="flex-sm-column"></div>
 </div>

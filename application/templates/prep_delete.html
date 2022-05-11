@@ -8,15 +8,21 @@
 {% block content %}
     {{ super() }}
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-danger">
+     {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
 <div class="row">
     <div class="flex-sm-column"></div>
     <div class="flex-lg-column rounded">
 <h1>Poistetaanko tämä resepti?</h1><br>
 <h3>Resepti poistetaan myös viikkosuunnitelmasta.</h3><br>
         <div class="links">
-        <a class="del" href="{{url_for('delete_recipe', recipe_name=recipe['recipe_name'])}}"
-       onclick="return confirm_alert(this)">Poista!</a><br><br>
-        <a class="del" href="{{url_for('home')}}">Peruuta ja palaa etusivulle</a><br><br></div>
+        <a class="del" href="{{url_for('recipe.delete_recipe', recipe_name=recipe['recipe_name'])}}">Poista!</a><br><br>
+        <a class="del" href="{{url_for('auth.home')}}">Peruuta ja palaa etusivulle</a><br><br></div>
  <p style="font-weight: bold; text-align: center">{{recipe.recipe_name}}</p><br>
                 <p style="text-align: center">{% for ingredient in recipe['ingredients'] %}
                 {{ingredient['quantity']}} {{ingredient['measuring_unit']}} {{ingredient['ingredient']}}<br>
@@ -26,9 +32,5 @@
     </div>
     <div class="flex-sm-column"></div>
 </div>
-<script>
-    function confirm_alert() {
-        return confirm("Resepti poistettu!")
-    }
-</script>
+
 {% endblock %}

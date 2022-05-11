@@ -36,16 +36,16 @@ Viikkosuunnitelma-sivulla näet automaattisesti luodun ostoslistan, joka sisält
     {% endif %}
         {% if current_user.is_authenticated %}
             {% if recipe.creator == current_user.email %}
-            <p><a href="{{ url_for('prep_delete', recipe_name=recipe['recipe_name'])}}">Poista</a></p>
-            <p><a href="{{ url_for('modify', recipe_name=recipe['recipe_name'])}}">Muokkaa</a></p>
+            <p><a href="{{ url_for('recipe.prep_delete', recipe_name=recipe['recipe_name'])}}">Poista</a></p>
+            <p><a href="{{ url_for('recipe.modify', recipe_name=recipe['recipe_name'])}}">Muokkaa</a></p>
             {% endif %}
             <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/>
-            <p><a href="{{ url_for('prep_add_plan', recipe_name=recipe['recipe_name'])}}">Lisää viikkosuunnitelmaan</a></p><br>
+            <p><a href="{{ url_for('plan.prep_add_plan', recipe_name=recipe['recipe_name'])}}">Lisää viikkosuunnitelmaan</a></p><br>
             </div>
         {% endif %}
     {% endfor %}<br>
         {% else %}
-        <h3>Ei vielä reseptejä! <a href="{{ url_for('add_recipe')}}">Lisää ensimmäinen!</a></h3>
+        <h3>Ei vielä reseptejä! <a href="{{ url_for('recipe.add_recipe')}}">Lisää ensimmäinen!</a></h3>
         {% endif %}
 
 <script>

@@ -9,12 +9,12 @@
 <div class="row">
     <div class="flex-sm-column"></div>
     <div class="flex-lg-column rounded">
-<h1>Tervetuloa, {{ name }}!</h1><br><br>
+<h1>Käyttäjäprofiili - {{ name }}</h1><br><br>
 
 <p style="text-align: center">Sähköpostiosoite: {{ current_user.email }} <br><br>
 Jäsen {{ current_user.registration_time.strftime('%d.%m.%Y') }} alkaen <br><br>
 Lisättyjä reseptejä: {{ user_recipes }} <br><br>
-<a href="{{ url_for('plan') }}">Näytä viikkosuunnitelma</a></p></div>
+<a href="{{ url_for('plan.plan') }}">Näytä viikkosuunnitelma</a></p></div>
     <div class="flex-sm-column"></div>
 </div>
 {% endblock %}
