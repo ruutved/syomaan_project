@@ -16,12 +16,13 @@ def prep_add_plan(recipe_name):
 
 @login_required
 def added_to_plan(recipe_name):
-
     # Etsitään käyttäjä sähköpostiosoitteen perusteella, jotta
     # voidaan lisätä tälle resepti
     user = User.objects(email=current_user.email).first()
     recipe = Recipe.objects(recipe_name=recipe_name).first()
 
+    # Lisätään listaan reseptin id (referencefield Recipe-objektiin). Jos listaan lisättyä reseptiä
+    # päivitetään myöhemmin, niin sen ainesosat päivittyvät myös ostoslistaan.
     user.recipes.append(recipe.id)
     user.save()
 
@@ -30,13 +31,13 @@ def added_to_plan(recipe_name):
 
 @login_required
 def plan():
-
     recipes = current_user.recipes
     recipe_ids = []
+    recipe_names = []
 
+    # Lisätään reseptien id:t tarkasteltavassa muodossa listaan
     for item in recipes:
         recipe_ids.append(item["id"])
-
 
     # Tehdään uusi lista resepteistä siksi, että jos resepti lisätään viikkosuunnitelmaan
     # useammin kuin kerran, niin saadaan niistä kaikista yhteenlasketut ainekset ostoslistaan
@@ -48,24 +49,28 @@ def plan():
     # Käydään läpi tietokannan reseptit:
     for item in get_ingredients:
         for r_id in recipe_ids:
-            print(item["id"])
-        # Jos reseptin nimi on sama kuin käyttäjän viikkosuunnitelman lisäämän reseptin:
-            if item["id"] in recipes:
-                print(item["id"])
-            # Lasketaan, montako kertaa kukin resepti esiintyy viikkosuunnitelmassa:
-            count = recipes.count(item["id"])
-            # Lisätään kaikki reseptien nimet shortlistiin, myös ne jotka esiintyvät monta kertaa:
-            shortlist.extend(repeat(item["id"], count))
-            # Käydään läpi shortlist:
-            for food in shortlist:
-                # Jos id listalla on sama kuin minkä tahansa tietokannassa olevan reseptin:
-                if food == item["id"]:
-                    # Käydään läpi reseptin ainesosat tietokannassa:
-                    for ingredient in item["ingredients"]:
-                        # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan, joten jätetään se pois:
-                        if ingredient["ingredient"] != "vettä":
+        # Jos tietokannan reseptin id on sama kuin käyttäjän viikkosuunnitelmaan lisäämän reseptin id...
+            if item["id"] == r_id:
+            # ...lisätään kaikki reseptien id:t shortlistiin, jota tarvitaan seuraaviin vaiheisiin.
+                shortlist.append(r_id)
+
+    # Käydään läpi shortlist:
+    # Jos id listalla on sama kuin minkä tahansa tietokannassa olevan reseptin, niin
+    # lisätään sen reseptin nimi nimilistaan, jota tarvitaan viikkosuunnitelman tulostamiseen.
+    # Tämä nimilista päivittyy aina plan-sivua ladatessa, eli jos reseptin nimi muuttuu, niin
+    # se muuttuu myös viikkosuunnitelmassa.
+    for item in get_ingredients:
+        for food in shortlist:
+            if food == item["id"]:
+                recipe_names.append(item["recipe_name"])
+
+                # Nyt varsinaiseen ostoslistaan.
+                # Käydään läpi reseptin ainesosat tietokannassa:
+                for ingredient in item["ingredients"]:
+                    # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan, joten jätetään se pois:
+                    if ingredient["ingredient"] != "vettä":
                         # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
-                            pre_shopping_list.append(ingredient)
+                        pre_shopping_list.append(ingredient)
 
     # Suoritetaan tarvittavat yksikkömuunnokset, jotta saadaan ostoslistaan samat ainesosat yhdessä yksikössä.
     # Tässä tapauksessa kaikki ml, cl, l, rkl tai tl -muodossa olevat muutetaan desilitroiksi. Kilogrammat
@@ -98,35 +103,39 @@ def plan():
     # Seuraava rakenne varmistaa sen, että useaan kertaan viikkosuunnitelmassa
     # esiintyvät ainesosat tulostuvat ostoslistaan kukin vain kerran, ja niiden kanssa
     # lopullinen tarvittava määrä. Esim. jos yhdessä reseptissä on 2 kananmunaa ja
-    # toisessa 4, niin ostoslistaan tulostuu "6 kpl kananmunaa".
+    # toisessa 4, niin ostoslistaan tulostuu "6 kpl kananmunaa". Rajataan luvut kahteen desimaaliin.
 
     final_list = {}
     for item in pre_shopping_list:
         key = (item["ingredient"])
         if key in final_list:
-            final_list[key] = {"quantity": float(item["quantity"]) + float(final_list[key]["quantity"]),
+            final_list[key] = {"quantity": round(float(item["quantity"]) + float(final_list[key]["quantity"]), 2),
                                 "measuring_unit": item["measuring_unit"], "ingredient": item["ingredient"]}
         else:
-            final_list[key] = {"quantity": float(item["quantity"]), "measuring_unit": item["measuring_unit"],
+            final_list[key] = {"quantity": round(float(item["quantity"]), 2), "measuring_unit": item["measuring_unit"],
                                "ingredient": item["ingredient"]}
 
     return render_template('plan.html', name=current_user.user_name,
-                           recipes=recipes, final_list=final_list)
-
-
-
+                           recipes=recipe_names, final_list=final_list)
 
 
 @login_required
 def delete_from_plan(recipe_name):
 
-    user = User.objects(email=current_user.email).first()
+    recipe = Recipe.objects(recipe_name=recipe_name).first()
+    recipe_id = recipe.id
 
-    if recipe_name in user.recipes:
-        user.recipes.remove(recipe_name)
-        user.save()
-        return redirect(url_for("plan.plan"))
-    else:
-        return jsonify({"error": "data not found"})
+    for item in current_user.recipes:
+        if str(recipe_id) == str(item['id']):
+            current_user.recipes.remove(item)
+            current_user.save()
+            return redirect(url_for("plan.plan"))
+
+        else:
+            pass
+
+    return redirect(url_for("plan.plan"))
+
+
 
 

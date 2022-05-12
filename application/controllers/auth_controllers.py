@@ -13,7 +13,6 @@ def home():
         return render_template("home.html", recipes=recipes)
 
     else:
-
         # Seuraava koodi muokkaa reseptiä:
         quantities = request.form.getlist(key="quantity")
         m_units = request.form.getlist(key="measuring_unit")

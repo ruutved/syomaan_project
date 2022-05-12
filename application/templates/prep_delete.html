@@ -19,7 +19,8 @@
     <div class="flex-sm-column"></div>
     <div class="flex-lg-column rounded">
 <h1>Poistetaanko tämä resepti?</h1><br>
-<h3>Resepti poistetaan myös viikkosuunnitelmasta.</h3><br>
+<h3>Jos resepti on omassa viikkosuunnitelmassasi, se poistetaan myös sieltä.</h3><br>
+        <h6>Jos joku muu on lisännyt sen suunnitelmaansa, et voi poistaa reseptiä!</h6><br>
         <div class="links">
         <a class="del" href="{{url_for('recipe.delete_recipe', recipe_name=recipe['recipe_name'])}}">Poista!</a><br><br>
         <a class="del" href="{{url_for('auth.home')}}">Peruuta ja palaa etusivulle</a><br><br></div>

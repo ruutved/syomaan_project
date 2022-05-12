@@ -1,6 +1,9 @@
 body {
     background-image: url(../taustakuva.jpg);
     align-items: center;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
     overflow-x: hidden;
     padding-top: 100px;
     text-align: center;
@@ -8,6 +11,10 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+* {
+    font-family: "Helvetica Neue"
 }
 
 p {
@@ -44,7 +51,7 @@ table {
 }
 
 .row {
-    height: 70vh;
+    min-height: 100vh;
     padding: 10px;
 }
 
@@ -59,15 +66,22 @@ table, th, td, tr {
     height: fit-content;
     }
 
+.navbar {
+    background-color: burlywood;
+    height: auto;
+    opacity: 0.95;
+    font-weight: bold;
+}
+
 .item {
-  background: navajowhite;
+  background: white;
   flex-flow: nowrap;
   width: 30%;
   float: left;
   margin: 10px auto auto auto;
   height: auto;
   line-height: normal;
-  opacity: 0.8;
+  opacity: 0.7;
   display: none;
 }
 
@@ -76,7 +90,7 @@ h4 {
 
 }
 
-h1, h3, h6 {
+h1, h2, h3, h6 {
     text-align: center;
 }
 
@@ -108,7 +122,7 @@ h1, h3, h6 {
 .flex-lg-column {
     width: 50%;
     background: linen;
-    height: auto;
+    height: fit-content;
     opacity: 0.9;
 }
 
@@ -116,9 +130,9 @@ h1, h3, h6 {
     width: 25%;
     float: left;
     margin: 10px;
-    background: linen;
-    height: auto;
-    opacity: 0.9;
+    background: white;
+    height: fit-content;
+    opacity: 0.8;
 }
 
 @media screen and (max-width: 800px) {
@@ -180,4 +194,20 @@ select {
 
 .show {
   display: block;
+}
+
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.footer {
+    position: relative;
+    width: 100%;
+    bottom: 0;
+    margin-top: 10px;
+    overflow: hidden;
+    background-color: sandybrown;
+    font-weight: bold;
+    opacity: 0.3;
 }

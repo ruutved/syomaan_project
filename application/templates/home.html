@@ -8,7 +8,7 @@
 <div id="intro" class="rounded">
     <h1 style="color: white">Tervetuloa katselemaan ja luomaan reseptejä.</h1><br>
 <p style="text-align: center; color: white;">Löydä itsellesi ja perheellesi sopivat reseptit ja lisää ne omaan viikkosuunnitelmaasi.<br>
-Viikkosuunnitelma-sivulla näet automaattisesti luodun ostoslistan, joka sisältää koko viikon ostokset!</p><br></div><br>
+Viikkosuunnitelma-sivulla voit merkitä ruokia eri päiville ja näet automaattisesti luodun ostoslistan, joka sisältää koko viikon ostokset!</p><br></div><br>
 
 <div id="selectorContainer">
     <div id="myBtnContainer">
@@ -40,7 +40,7 @@ Viikkosuunnitelma-sivulla näet automaattisesti luodun ostoslistan, joka sisält
             <p><a href="{{ url_for('recipe.modify', recipe_name=recipe['recipe_name'])}}">Muokkaa</a></p>
             {% endif %}
             <input type="hidden" id="recipe_id" name="recipe_id" value="{{recipe.id}}"/>
-            <p><a href="{{ url_for('plan.prep_add_plan', recipe_name=recipe['recipe_name'])}}">Lisää viikkosuunnitelmaan</a></p><br>
+            <p><a href="{{ url_for('plan.prep_add_plan', recipe_name=recipe['recipe_name'])}}">Lisää suunnitelmaan</a></p><br>
             </div>
         {% endif %}
     {% endfor %}<br>

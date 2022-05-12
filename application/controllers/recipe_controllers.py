@@ -69,7 +69,6 @@ def delete_ingredient(recipe_name):
     ingredients = recipe.ingredients
 
     for item in ingredients:
-        print(item)
         if str(item) == str(ingredient):
             ingredients.remove(item)
             recipe.save()
@@ -82,18 +81,6 @@ def delete_ingredient(recipe_name):
 @login_required
 def prep_delete(recipe_name):
     recipe = Recipe.objects(recipe_name=recipe_name).first()
-    all_users = User.objects
-    for user in all_users:
-        if user["id"] != current_user.id:
-            if recipe_name in user.recipes:
-                print("löytyy")
-            else:
-                print("ei löydy")
-        else:
-            if recipe_name in user.recipes:
-                print("löytyy")
-            else:
-                print("ei löydy")
 
     if not recipe:
         flash('Reseptiä ei löydy, tarkista tiedot!')
@@ -107,22 +94,34 @@ def delete_recipe(recipe_name):
 
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     all_users = User.objects
+    recipe_id = recipe['id']
+
+    action = 0
 
     if not recipe:
         return jsonify({"error": "data not found"})
     else:
         # Tarkistetaan, onko reseptiä lisätty kenenkään muun kuin sen tekijän viikkosuunnitelmaan.
-        # Jos on, niin reseptiä ei voi poistaa.
+        # Jos on, niin reseptiä ei voi poistaa. Tästä tulee flash-ilmoitus sivulle.
         for user in all_users:
             if user["id"] != current_user.id:
-                if recipe_name in user.recipes:
-                    flash('Tätä reseptiä ei voi poistaa, sillä joku muu on lisännyt sen viikkosuunnitelmaansa!')
-                    return redirect(url_for('recipe.prep_delete', recipe_name=recipe['recipe_name']))
-            else:
-                if recipe_name in current_user.recipes:
-                    current_user.recipes.remove(recipe_name)
-                    current_user.save()
-                    recipe.delete()
-                else:
-                    recipe.delete()
+                for item in user.recipes:
+                    if recipe_id == item['id']:
+                        action += 1
+                        flash('Tätä reseptiä ei voi poistaa, sillä joku muu on lisännyt sen viikkosuunnitelmaansa!')
+                        return render_template("prep_delete.html", recipe=recipe)
+    # Jos reseptiä ei ole löytynyt muiden käyttäjien suunnitelmista:
+    if action == 0:
+        # Tarkistetaan, löytyykö se reseptin tekijän viikkosuunnitelmasta - jos löytyy, niin
+        # poistetaan se ensin sieltä, ja sitten kokonaan. Jos ei, niin poistetaan vain resepti
+        # tietokannasta.
+        for item in current_user.recipes:
+            if str(recipe_id) == str(item['id']):
+                current_user.recipes.remove(item)
+                current_user.save()
+                recipe.delete()
                 return redirect(url_for("auth.home"))
+            else:
+                recipe.delete()
+
+    return redirect(url_for("auth.home"))

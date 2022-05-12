@@ -11,14 +11,16 @@
     {% if recipes|length > 0 %}
     <div class="flex-md-column rounded">
 <h2>Viikkosuunnitelma - {{ name }}</h2><br>
+        <p>Kirjoita reseptin viereen haluamasi viikonpäivä tai tilaisuus/juhla, jota varten haluat valmistaa reseptin.</p>
     <table>
     <tr>
+        <th>Päivä/tilaisuus</th>
         <th>Resepti</th>
 
     </tr>{% for recipe_added in recipes %}
     <tr>
         <td><input type="text" class="form-control"></td>
-        <td id="name">{{recipe_added}} <a href="{{ url_for('plan.delete_from_plan', recipe_name=recipe_added['recipe_name'])}}">Poista</a>
+        <td id="name">{{recipe_added}} <a href="{{ url_for('plan.delete_from_plan', recipe_name=recipe_added)}}">Poista</a>
         {% endfor %}</td>
     </table>
     </div>
