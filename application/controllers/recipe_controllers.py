@@ -15,7 +15,6 @@ def add_recipe():
         if not existing_recipe:
 
             recipe_category = request.form.get("category")
-
             add_quantities = request.form.getlist(key="quantity")
             add_units = request.form.getlist(key="measuring_unit")
             add_ingredients = request.form.getlist(key="ingredient")
@@ -49,6 +48,9 @@ def add_recipe():
 
 @login_required
 def modify(recipe_name):
+
+    # Tällä funktiolla päästään vain muokaussivulle, itse muokkaus
+    # on kuvattu auth.home-endpointissa
     recipes = Recipe.objects
     recipe = Recipe.objects(recipe_name=recipe_name).first()
 
@@ -64,6 +66,7 @@ def modify(recipe_name):
 @login_required
 def delete_ingredient(recipe_name):
 
+    # Tässä voi poistaa ainesosan muokkaussivulla
     ingredient = request.args.get('ingredient')
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     ingredients = recipe.ingredients
@@ -80,6 +83,8 @@ def delete_ingredient(recipe_name):
 
 @login_required
 def prep_delete(recipe_name):
+    # Tulostetaan resepti käyttäjälle ja varmistetaan, että
+    # tämä haluaa varmasti poistaa sen:
     recipe = Recipe.objects(recipe_name=recipe_name).first()
 
     if not recipe:
@@ -92,6 +97,8 @@ def prep_delete(recipe_name):
 @login_required
 def delete_recipe(recipe_name):
 
+    # Poistetaan resepti, jos sitä ei ole kenekään muun kuin sen lisääjän
+    # viikkosuunnitelmassa
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     all_users = User.objects
     recipe_id = recipe['id']

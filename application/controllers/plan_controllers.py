@@ -1,5 +1,3 @@
-from itertools import repeat
-
 from flask import render_template, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
@@ -8,7 +6,8 @@ from application.models.models import Recipe, User
 
 @login_required
 def prep_add_plan(recipe_name):
-
+    # Tässä tulostetaan resepti näytölle ja kysytään halutaanko se varmasti lisätä
+    # suunnitelmaan:
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_id = recipe.id
     return render_template('add_to_plan.html', recipe=recipe, recipe_name=recipe_name, recipe_id=recipe_id)
@@ -31,6 +30,9 @@ def added_to_plan(recipe_name):
 
 @login_required
 def plan():
+
+    # Seuraavalla logiikalla tulostetaan viikkosuunnitelma-sivu.
+
     recipes = current_user.recipes
     recipe_ids = []
     recipe_names = []
@@ -122,6 +124,7 @@ def plan():
 @login_required
 def delete_from_plan(recipe_name):
 
+    # Haetaan reseptin nimi ja id, jotta se voidaan poistaa viikkosuunnitelmasta
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_id = recipe.id
 
