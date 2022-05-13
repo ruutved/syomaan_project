@@ -94,7 +94,7 @@ def login():
                     return redirect(url_for('auth.login'))
         else:
             flash('Käyttäjää ei löydy!')
-            return redirect(url_for('auth.ogin'))
+            return redirect(url_for('auth.login'))
 
     else:
         return render_template("login.html")
