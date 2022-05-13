@@ -33,36 +33,33 @@ def plan():
 
     # Seuraavalla logiikalla tulostetaan viikkosuunnitelma-sivu.
 
+    # Haetaan ensin kirjautuneen käyttäjän reseptit:
     recipes = current_user.recipes
+
+    # Luodaan kaksi tyhjää listaa. Toiseen lisätään reseptien id:t ja toiseen myöhemmin
+    # reseptien nimet, jotka tulostetaan viikkosuunnitelmaan.
     recipe_ids = []
     recipe_names = []
 
-    # Lisätään reseptien id:t tarkasteltavassa muodossa listaan
+    # Lisätään reseptien id:t tarkasteltavassa muodossa listaan. Tämä on tehtävä, koska jos
+    # silmukoidaan current_user.recipes, niin tulostuu "Recipe object" (koska tämä on ns. foreign key itse reseptiin).
+    # Kukin ID on siis haettava tuolla tilapäismuuttuja item["id"]:llä, sillä tietotyyppi ObjectId:tä ei voi käsitellä sellaisenaan:
     for item in recipes:
         recipe_ids.append(item["id"])
 
-    # Tehdään uusi lista resepteistä siksi, että jos resepti lisätään viikkosuunnitelmaan
-    # useammin kuin kerran, niin saadaan niistä kaikista yhteenlasketut ainekset ostoslistaan
-    shortlist = []
+    # Luodaan tyhjä lista, johon lisätään kaikki tarvittavat ainekset:
     pre_shopping_list = []
 
+    # Haetaan kaikki tietokannan reseptit muuttujaan
     get_ingredients = Recipe.objects
 
-    # Käydään läpi tietokannan reseptit:
-    for item in get_ingredients:
-        for r_id in recipe_ids:
-        # Jos tietokannan reseptin id on sama kuin käyttäjän viikkosuunnitelmaan lisäämän reseptin id...
-            if item["id"] == r_id:
-            # ...lisätään kaikki reseptien id:t shortlistiin, jota tarvitaan seuraaviin vaiheisiin.
-                shortlist.append(r_id)
-
-    # Käydään läpi shortlist:
+    # Käydään läpi recipe_ids yhdessä kaikkien reseptien kanssa:
     # Jos id listalla on sama kuin minkä tahansa tietokannassa olevan reseptin, niin
     # lisätään sen reseptin nimi nimilistaan, jota tarvitaan viikkosuunnitelman tulostamiseen.
-    # Tämä nimilista päivittyy aina plan-sivua ladatessa, eli jos reseptin nimi muuttuu, niin
+    # Tämä nimilista päivittyy aina plan-sivua ladatessa, eli jos reseptin nimiä muutetaan, niin
     # se muuttuu myös viikkosuunnitelmassa.
     for item in get_ingredients:
-        for food in shortlist:
+        for food in recipe_ids:
             if food == item["id"]:
                 recipe_names.append(item["recipe_name"])
 
@@ -74,7 +71,8 @@ def plan():
                         # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
                         pre_shopping_list.append(ingredient)
 
-    # Suoritetaan tarvittavat yksikkömuunnokset, jotta saadaan ostoslistaan samat ainesosat yhdessä yksikössä.
+
+    # Suoritetaan nyt tarvittavat yksikkömuunnokset, jotta saadaan ostoslistaan samat ainesosat yhdessä yksikössä.
     # Tässä tapauksessa kaikki ml, cl, l, rkl tai tl -muodossa olevat muutetaan desilitroiksi. Kilogrammat
     # muutetaan grammoiksi. Tämä ei ole kaikenkattava lista, mutta kattaa yleisimmät mitat.
 
@@ -102,10 +100,10 @@ def plan():
         else:
             pass
 
-    # Seuraava rakenne varmistaa sen, että useaan kertaan viikkosuunnitelmassa
-    # esiintyvät ainesosat tulostuvat ostoslistaan kukin vain kerran, ja niiden kanssa
-    # lopullinen tarvittava määrä. Esim. jos yhdessä reseptissä on 2 kananmunaa ja
+    # Seuraava rakenne varmistaa sen, että useaan kertaan suunnitelmassa esiintyvät ainesosat tulostuvat ostoslistaan
+    # kukin vain kerran, ja niiden kanssa lopullinen tarvittava määrä. Esim. jos yhdessä reseptissä on 2 kananmunaa ja
     # toisessa 4, niin ostoslistaan tulostuu "6 kpl kananmunaa". Rajataan luvut kahteen desimaaliin.
+    # Ohjelma ei ota huomioon kirjoitusvirheitä tai eri muodossa kirjoitettuja ainesosia, vaan ne tulostuvat erikseen.
 
     final_list = {}
     for item in pre_shopping_list:
