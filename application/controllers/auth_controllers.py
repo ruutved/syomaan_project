@@ -13,7 +13,7 @@ def home():
         return render_template("home.html", recipes=recipes)
 
     else:
-        # Seuraava koodi muokkaa reseptiä:
+        # Modifying the recipe
         quantities = request.form.getlist(key="quantity")
         m_units = request.form.getlist(key="measuring_unit")
         ingredients = request.form.getlist(key="ingredient")
@@ -46,11 +46,11 @@ def signup():
         email_found = users(email=email).first()
 
         if email_found:
-            flash('Tämä sähköpostiosoite on jo rekisteröity!')
+            flash('Tämä sähköpostiosoite on jo rekisteröity!')  # This e-mail address has already been registered
             return redirect(url_for('auth.signup'))
 
         if password1 != password2:
-            flash('Salasanat eivät täsmää!')
+            flash('Salasanat eivät täsmää!')  # The passwords don't match
             return redirect(url_for('auth.signup'))
 
         else:
@@ -90,10 +90,10 @@ def login():
                 if current_user.email:
                     return redirect(url_for('auth.logged_in'))
                 else:
-                    flash('Väärä salasana')
+                    flash('Väärä salasana')  # Wrong password
                     return redirect(url_for('auth.login'))
         else:
-            flash('Käyttäjää ei löydy!')
+            flash('Käyttäjää ei löydy!')  # User not found
             return redirect(url_for('auth.login'))
 
     else:

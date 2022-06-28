@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from application.models.models import Recipe, User
@@ -6,8 +6,8 @@ from application.models.models import Recipe, User
 
 @login_required
 def prep_add_plan(recipe_name):
-    # Tässä tulostetaan resepti näytölle ja kysytään halutaanko se varmasti lisätä
-    # suunnitelmaan:
+    # Recipe will be rendered on the page and the user is asked if
+    # they want to add it to the weekly plan:
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_id = recipe.id
     return render_template('add_to_plan.html', recipe=recipe, recipe_name=recipe_name, recipe_id=recipe_id)
@@ -15,13 +15,14 @@ def prep_add_plan(recipe_name):
 
 @login_required
 def added_to_plan(recipe_name):
-    # Etsitään käyttäjä sähköpostiosoitteen perusteella, jotta
-    # voidaan lisätä tälle resepti
+    # The user is identified by their email address so the recipe can be
+    # added to the weekly plan:
     user = User.objects(email=current_user.email).first()
     recipe = Recipe.objects(recipe_name=recipe_name).first()
 
-    # Lisätään listaan reseptin id (referencefield Recipe-objektiin). Jos listaan lisättyä reseptiä
-    # päivitetään myöhemmin, niin sen ainesosat päivittyvät myös ostoslistaan.
+    # Adding the recipe id to the user's recipe list (a reference field to the Recipe
+    # object). So if the added recipe is updated later, its ingredients etc. are
+    # updated in the shopping list as well.
     user.recipes.append(recipe.id)
     user.save()
 
@@ -31,50 +32,55 @@ def added_to_plan(recipe_name):
 @login_required
 def plan():
 
-    # Seuraavalla logiikalla tulostetaan viikkosuunnitelma-sivu.
+    # Rendering the weekly plan:
 
-    # Haetaan ensin kirjautuneen käyttäjän reseptit:
+    # Retrieving the current user's recipes:
     recipes = current_user.recipes
 
-    # Luodaan kaksi tyhjää listaa. Toiseen lisätään reseptien id:t ja toiseen myöhemmin
-    # reseptien nimet, jotka tulostetaan viikkosuunnitelmaan.
+    # Let's create two empty lists. One is for recipe ids and the other
+    # will later on take the recipes' names.
+
     recipe_ids = []
     recipe_names = []
 
-    # Lisätään reseptien id:t tarkasteltavassa muodossa listaan. Tämä on tehtävä, koska jos
-    # silmukoidaan current_user.recipes, niin tulostuu "Recipe object" (koska tämä on ns. foreign key itse reseptiin).
-    # Kukin ID on siis haettava tuolla tilapäismuuttuja item["id"]:llä, sillä tietotyyppi ObjectId:tä ei voi käsitellä sellaisenaan:
+    # Now we add the recipe ids to the above list. This has to be done - if we just
+    # loop through current_user.recipes, we print a string "Recipe object" (this could be
+    # described as a kind of foreign key to the recipe).
+    # So we have to retrieve all the ids with a temporary variable item["id"], as the data type ObjectID
+    # cannot be handled as such.
+
     for item in recipes:
         recipe_ids.append(item["id"])
 
-    # Luodaan tyhjä lista, johon lisätään kaikki tarvittavat ainekset:
+    # Let's now create a list for the ingredients:
     pre_shopping_list = []
 
-    # Haetaan kaikki tietokannan reseptit muuttujaan
+    # Retrieving all the recipes in the database to have a reference to the ingredients:
     get_ingredients = Recipe.objects
 
-    # Käydään läpi recipe_ids yhdessä kaikkien reseptien kanssa:
-    # Jos id listalla on sama kuin minkä tahansa tietokannassa olevan reseptin, niin
-    # lisätään sen reseptin nimi nimilistaan, jota tarvitaan viikkosuunnitelman tulostamiseen.
-    # Tämä nimilista päivittyy aina plan-sivua ladatessa, eli jos reseptin nimiä muutetaan, niin
-    # se muuttuu myös viikkosuunnitelmassa.
+    # Next, we loop through the recipe_ids list together with all the recipes in the database.
+    # If an id on the recipe_ids list is identical to any recipe in the database (which we expect to be the case),
+    # we add that recipe's name to the name list.
+    # This name list is always updated and retrieved when loading the "plan" page - so in case of any
+    # changes, the changes are reflected in the weekly plan.
     for item in get_ingredients:
         for food in recipe_ids:
             if food == item["id"]:
                 recipe_names.append(item["recipe_name"])
 
-                # Nyt varsinaiseen ostoslistaan.
-                # Käydään läpi reseptin ainesosat tietokannassa:
+                # Now we create the shopping list.
+                # Looping through the ingredients:
                 for ingredient in item["ingredients"]:
-                    # Vesi on sellainen ainesosa, jota ei tarvitse lisätä ostoslistaan, joten jätetään se pois:
+                    # One doesn't usually have to buy water for cooking so let's exclude it:
                     if ingredient["ingredient"] != "vettä":
-                        # Lisätään nyt kaikki muut tilapäiseen ostoslistaan:
+                        # Now adding everything else to a temporary shopping list:
                         pre_shopping_list.append(ingredient)
 
-
-    # Suoritetaan nyt tarvittavat yksikkömuunnokset, jotta saadaan ostoslistaan samat ainesosat yhdessä yksikössä.
-    # Tässä tapauksessa kaikki ml, cl, l, rkl tai tl -muodossa olevat muutetaan desilitroiksi. Kilogrammat
-    # muutetaan grammoiksi. Tämä ei ole kaikenkattava lista, mutta kattaa yleisimmät mitat.
+    # Measurement conversions are up next, so the same ingredients will be in the same units of measurement.
+    # I have chosen to convert all the ml, cl, l, tbsp or tsp (rkl and tl in Finnish, respectively) to desiliters (dl).
+    # Kilograms are converted to grams.
+    # Obviously this list is NOT exhaustive and won't solve all the problems!
+    # It's rather an example of what can be done:
 
     for item in pre_shopping_list:
         if item["measuring_unit"].strip() == "ml" or item["measuring_unit"].strip() == "millilitraa":
@@ -100,10 +106,12 @@ def plan():
         else:
             pass
 
-    # Seuraava rakenne varmistaa sen, että useaan kertaan suunnitelmassa esiintyvät ainesosat tulostuvat ostoslistaan
-    # kukin vain kerran, ja niiden kanssa lopullinen tarvittava määrä. Esim. jos yhdessä reseptissä on 2 kananmunaa ja
-    # toisessa 4, niin ostoslistaan tulostuu "6 kpl kananmunaa". Rajataan luvut kahteen desimaaliin.
-    # Ohjelma ei ota huomioon kirjoitusvirheitä tai eri muodossa kirjoitettuja ainesosia, vaan ne tulostuvat erikseen.
+    # The next structure makes sure that any duplicate ingredients from many recipes are printed in the
+    # shopping list only once, with the total amount needed for all the recipes.
+    # For example, if one recipe has 2 eggs and another 4 eggs, then the shopping list will have 6 eggs.
+    # Amounts are rounded to 2 decimals.
+    # This program won't take into account typing errors or ingredients written in different forms!
+    # So this also should be treated as an example of a feature.
 
     final_list = {}
     for item in pre_shopping_list:
@@ -122,7 +130,7 @@ def plan():
 @login_required
 def delete_from_plan(recipe_name):
 
-    # Haetaan reseptin nimi ja id, jotta se voidaan poistaa viikkosuunnitelmasta
+    # Retrieving recipe name and id, so it can be deleted from the weekly plan:
     recipe = Recipe.objects(recipe_name=recipe_name).first()
     recipe_id = recipe.id
 
