@@ -4,10 +4,12 @@
 
 This website has been planned and created as a school project in the spring semester 2022 
 (Lapland University of Applied Sciences, Bachelor of Engineering in Information Technology,
-second year). I have realized the entire project by myself. I needed something for my own needs (planning a shopping list for an entire week), 
+second year). I have realized the entire project by myself between 28.3.-14.5.2022. 
+I needed something for my own needs (planning a shopping list for an entire week), 
 so I decided to dedicate this project for covering that need. 
 The goal of the project was to further develop programming skills, practice project planning and create
-a functional entirety from scratch. Please note the UI is in Finnish. 
+a functional entirety from scratch. Please note the UI is in Finnish. All the code folders and files
+can be found in the folder "application".
 
 ## Technologies
 
